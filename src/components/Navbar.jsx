@@ -11,7 +11,8 @@ import {
   BookOpen,
   Terminal,
   Eye,
-  Headphones
+  Headphones,
+  Accessibility
 } from 'lucide-react';
 import { LEARNING_STYLES } from '../data/learningStyles';
 
@@ -23,12 +24,12 @@ export const Navbar = ({
   unreadCount, 
   onOpenNotifications, 
   onOpenApiKeyModal,
-  onOpenStyleModal
+  onOpenStyleModal,
+  onOpenA11yModal
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const currentStyle = LEARNING_STYLES[profile.learningStyle] || LEARNING_STYLES.auditory;
 
-  // Calculate days until exam
   const examDate = new Date(profile.targetExamDate);
   const today = new Date();
   const diffTime = examDate - today;
@@ -44,7 +45,7 @@ export const Navbar = ({
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-[#0f172a]/90 backdrop-blur-md border-b border-slate-800 text-white">
+    <header className="sticky top-0 z-40 bg-[#0f172a]/95 backdrop-blur-md border-b border-slate-800 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
@@ -67,14 +68,14 @@ export const Navbar = ({
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
+          <nav className="hidden md:flex items-center space-x-1 lg:space-x-2" role="navigation">
             {navItems.map((item) => {
               const isActive = activeTab === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`px-3 py-2 rounded-lg text-xs lg:text-sm font-medium transition-all duration-150 flex items-center space-x-1.5 ${
+                  className={`px-3 py-2 rounded-lg text-xs lg:text-sm font-medium transition-all duration-150 flex items-center space-x-1.5 focus-visible:ring-2 focus-visible:ring-blue-400 ${
                     isActive
                       ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30 shadow-sm'
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
@@ -86,14 +87,14 @@ export const Navbar = ({
             })}
           </nav>
 
-          {/* Right Status Indicators & Quick Actions */}
+          {/* Right Status Indicators & Accessibility Button */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             
             {/* Learning Style Pill */}
             <button
               onClick={onOpenStyleModal}
               title={`Active Learning Style: ${currentStyle.name}. Click to change.`}
-              className="hidden sm:flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-medium border border-slate-700 bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 transition"
+              className="hidden sm:flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-medium border border-slate-700 bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 transition focus-visible:ring-2 focus-visible:ring-blue-400"
             >
               <span className="w-2 h-2 rounded-full" style={{ backgroundColor: currentStyle.color }}></span>
               <span className="hidden lg:inline text-slate-400">Style:</span>
@@ -119,11 +120,22 @@ export const Navbar = ({
               <span>{diffDays}d left</span>
             </div>
 
+            {/* Accessibility / Inclusion Center Button */}
+            <button
+              onClick={onOpenA11yModal}
+              className="p-2 rounded-lg text-sky-400 bg-sky-950/30 border border-sky-800/50 hover:bg-sky-900/40 transition focus-visible:ring-2 focus-visible:ring-sky-400"
+              title="Accessibility & Inclusion Settings (TTS, Contrast, Dyslexia Fonts, Shortcuts)"
+              aria-label="Accessibility & Accommodations"
+            >
+              <Accessibility className="w-4 h-4" />
+            </button>
+
             {/* Notification Bell */}
             <button
               onClick={onOpenNotifications}
-              className="relative p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition"
+              className="relative p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition focus-visible:ring-2 focus-visible:ring-blue-400"
               title="Reminders & Notifications"
+              aria-label="Study notifications"
             >
               <Bell className="w-4 h-4" />
               {unreadCount > 0 && (
@@ -137,10 +149,11 @@ export const Navbar = ({
             {/* Gemini API Key config */}
             <button
               onClick={onOpenApiKeyModal}
-              className={`p-2 rounded-lg transition ${
+              className={`p-2 rounded-lg transition focus-visible:ring-2 focus-visible:ring-blue-400 ${
                 profile.apiKey ? 'text-emerald-400 bg-emerald-950/30 border border-emerald-800/50' : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
               title={profile.apiKey ? 'Gemini API Key Active' : 'Configure Gemini API Key'}
+              aria-label="Gemini API Key Settings"
             >
               <Key className="w-4 h-4" />
             </button>
@@ -148,7 +161,8 @@ export const Navbar = ({
             {/* Mobile menu toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800"
+              className="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 focus-visible:ring-2 focus-visible:ring-blue-400"
+              aria-label="Toggle navigation menu"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileMenuOpen ? (
@@ -186,6 +200,12 @@ export const Navbar = ({
             <span>Learning Style:</span>
             <button onClick={onOpenStyleModal} className="text-blue-400 underline font-semibold">
               {currentStyle.name}
+            </button>
+          </div>
+          <div className="pt-1 flex items-center justify-between text-xs text-slate-400 px-1">
+            <span>Accessibility:</span>
+            <button onClick={onOpenA11yModal} className="text-sky-400 underline font-semibold">
+              Open Accommodations
             </button>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import { 
   CheckCircle2, 
@@ -12,34 +12,39 @@ import {
   Filter,
   Check,
   ChevronRight,
-  BookOpen
+  BookOpen,
+  Volume2,
+  VolumeX,
+  Keyboard
 } from 'lucide-react';
 import { PRACTICE_QUESTIONS } from '../data/questions';
 import { AZ900_DOMAINS } from '../data/curriculum';
 import { LEARNING_STYLES } from '../data/learningStyles';
 import { NotificationService } from '../services/notificationService';
+import { TTSService } from '../services/ttsService';
 
 export const PracticeQuiz = ({ 
   profile, 
   readiness, 
   onRecordAnswer, 
-  initialMode = 'adaptive' 
+  initialMode = 'adaptive',
+  a11ySettings = {}
 }) => {
   const currentStyle = LEARNING_STYLES[profile.learningStyle] || LEARNING_STYLES.auditory;
-  const [mode, setMode] = useState(initialMode); // 'adaptive' | 'all' | 'domain'
+  const [mode, setMode] = useState(initialMode);
   const [selectedDomain, setSelectedDomain] = useState('all');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [scoreCount, setScoreCount] = useState({ correct: 0, total: 0 });
   const [showDistractors, setShowDistractors] = useState(true);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   // Filter questions based on mode and weak areas
   const getFilteredQuestions = () => {
     let pool = [...PRACTICE_QUESTIONS];
 
     if (mode === 'adaptive' && readiness.weakAreas.length > 0) {
-      // Prioritize weak subtopics first
       const weakSubtopicIds = new Set(readiness.weakAreas.map(w => w.subtopicId));
       pool.sort((a, b) => {
         const aWeak = weakSubtopicIds.has(a.subtopic);
@@ -58,11 +63,48 @@ export const PracticeQuiz = ({
   const questions = getFilteredQuestions();
   const currentQuestion = questions[currentIndex] || questions[0];
 
+  // Stop TTS on question change
   useEffect(() => {
-    // Reset question state on filter/index change
+    TTSService.stop();
+    setIsSpeaking(false);
     setSelectedOption(null);
     setIsSubmitted(false);
-  }, [currentIndex, mode, selectedDomain]);
+
+    // If autoReadAloud is enabled, read question and options automatically
+    if (a11ySettings.autoReadAloud && currentQuestion) {
+      const textToRead = `${currentQuestion.question}. Option A: ${currentQuestion.options[0]}. Option B: ${currentQuestion.options[1]}. Option C: ${currentQuestion.options[2]}. Option D: ${currentQuestion.options[3]}.`;
+      setIsSpeaking(true);
+      TTSService.speak(textToRead, { onEnd: () => setIsSpeaking(false) });
+    }
+  }, [currentIndex, mode, selectedDomain, a11ySettings.autoReadAloud]);
+
+  // Full Keyboard Navigation for Motor/Mobility Impaired Learners
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Don't trigger if focus is on an input or textarea
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+
+      const key = e.key.toUpperCase();
+
+      // Number keys 1-4 or letters A-D
+      if (!isSubmitted) {
+        if (['1', 'A'].includes(key)) setSelectedOption(0);
+        else if (['2', 'B'].includes(key)) setSelectedOption(1);
+        else if (['3', 'C'].includes(key)) setSelectedOption(2);
+        else if (['4', 'D'].includes(key)) setSelectedOption(3);
+        else if (e.key === 'Enter' && selectedOption !== null) {
+          handleSubmitAnswer();
+        }
+      } else {
+        if (e.key === 'Enter' || key === 'N') {
+          handleNextQuestion();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isSubmitted, selectedOption, currentIndex]);
 
   const handleSelectOption = (idx) => {
     if (isSubmitted) return;
@@ -75,57 +117,75 @@ export const PracticeQuiz = ({
     const isCorrect = selectedOption === currentQuestion.correctIndex;
     setIsSubmitted(true);
 
-    // Update session score
     setScoreCount(prev => ({
       correct: prev.correct + (isCorrect ? 1 : 0),
       total: prev.total + 1
     }));
 
-    // Record answer into persistent storage engine
     onRecordAnswer(currentQuestion.subtopic, isCorrect);
 
-    // Vibe effects!
+    // Play sounds & animations respecting a11y
     if (isCorrect) {
       NotificationService.playChime('success');
-      confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: { y: 0.8 },
-        colors: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6']
-      });
+      if (!a11ySettings.reducedMotion) {
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.8 },
+          colors: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6']
+        });
+      }
     } else {
       NotificationService.playChime('alert');
+    }
+
+    // Auto read feedback if requested
+    if (a11ySettings.autoReadAloud) {
+      const feedback = isCorrect 
+        ? `Correct! ${currentQuestion.explanation.whyCorrect}` 
+        : `Incorrect. The correct answer was option ${String.fromCharCode(65 + currentQuestion.correctIndex)}: ${currentQuestion.options[currentQuestion.correctIndex]}. ${currentQuestion.explanation.whyCorrect}`;
+      setIsSpeaking(true);
+      TTSService.speak(feedback, { onEnd: () => setIsSpeaking(false) });
     }
   };
 
   const handleNextQuestion = () => {
+    TTSService.stop();
+    setIsSpeaking(false);
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
-      // Loop or finish
       setCurrentIndex(0);
     }
   };
 
+  const handleToggleSpeak = () => {
+    if (isSpeaking) {
+      TTSService.stop();
+      setIsSpeaking(false);
+    } else {
+      let textToRead = `${currentQuestion.question}. Option A: ${currentQuestion.options[0]}. Option B: ${currentQuestion.options[1]}. Option C: ${currentQuestion.options[2]}. Option D: ${currentQuestion.options[3]}.`;
+      if (isSubmitted) {
+        textToRead += ` Correct answer is ${String.fromCharCode(65 + currentQuestion.correctIndex)}. Explanation: ${currentQuestion.explanation.whyCorrect}`;
+      }
+      setIsSpeaking(true);
+      TTSService.speak(textToRead, { onEnd: () => setIsSpeaking(false) });
+    }
+  };
+
   const handleRestart = () => {
+    TTSService.stop();
+    setIsSpeaking(false);
     setCurrentIndex(0);
     setSelectedOption(null);
     setIsSubmitted(false);
     setScoreCount({ correct: 0, total: 0 });
   };
 
-  if (!currentQuestion) {
-    return (
-      <div className="p-12 text-center text-slate-400">
-        No questions match the current filter.
-      </div>
-    );
-  }
-
   const isCorrect = isSubmitted && selectedOption === currentQuestion.correctIndex;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-fade-in">
+    <div className="max-w-4xl mx-auto space-y-6 animate-fade-in" role="region" aria-label="Practice Quiz">
       
       {/* Header & Mode Controls */}
       <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -135,7 +195,7 @@ export const PracticeQuiz = ({
             <span>Smart Practice & Assessment Hub</span>
           </h2>
           <p className="text-xs text-slate-400 mt-1">
-            Instant feedback and deep "Why It's Wrong" distractor explanations.
+            Instant feedback, accessible screen reader cues, and deep "Why It's Wrong" distractor explanations.
           </p>
         </div>
 
@@ -177,40 +237,22 @@ export const PracticeQuiz = ({
         </div>
       </div>
 
-      {/* Domain drill dropdown when in domain mode */}
-      {mode === 'domain' && (
-        <div className="flex items-center space-x-2 bg-slate-900/60 border border-slate-800 p-3 rounded-xl">
-          <Filter className="w-4 h-4 text-slate-400 ml-2" />
-          <span className="text-xs text-slate-400 font-medium">Select Domain:</span>
-          <select
-            value={selectedDomain}
-            onChange={(e) => { setSelectedDomain(e.target.value); setCurrentIndex(0); }}
-            className="bg-slate-800 text-slate-200 border border-slate-700 rounded-lg text-xs px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          >
-            <option value="all">All Domains</option>
-            {AZ900_DOMAINS.map(d => (
-              <option key={d.id} value={d.id}>{d.name} ({d.weight})</option>
-            ))}
-          </select>
-        </div>
-      )}
-
       {/* Progress & Live Score Bar */}
       <div className="flex items-center justify-between text-xs text-slate-400 px-1">
         <span className="font-semibold text-slate-300">
           Question {currentIndex + 1} of {questions.length}
         </span>
         <div className="flex items-center space-x-4">
-          <span>Session Accuracy: <strong className="text-white">{scoreCount.total > 0 ? Math.round((scoreCount.correct / scoreCount.total) * 100) : 0}%</strong></span>
-          <span className="text-slate-600">|</span>
+          <span className="hidden sm:inline">Shortcuts: <kbd className="px-1 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300 font-mono text-[10px]">1-4</kbd> to pick, <kbd className="px-1 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300 font-mono text-[10px]">Enter</kbd> to submit</span>
+          <span className="text-slate-600 hidden sm:inline">|</span>
           <span>Score: <strong className="text-emerald-400">{scoreCount.correct}</strong> / {scoreCount.total}</span>
         </div>
       </div>
 
       {/* Question Card */}
-      <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl relative overflow-hidden">
+      <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl relative overflow-hidden">
         
-        {/* Topic Tag & Difficulty */}
+        {/* Topic Tag & TTS Read Aloud Control */}
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-4">
           <div className="flex items-center space-x-2">
             <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/30 uppercase tracking-wider">
@@ -220,15 +262,31 @@ export const PracticeQuiz = ({
               Topic: <strong className="text-slate-300">{currentQuestion.subtopic}</strong>
             </span>
           </div>
-          <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded border ${
-            currentQuestion.difficulty === 'beginner' 
-              ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10'
-              : currentQuestion.difficulty === 'intermediate'
-              ? 'text-amber-400 border-amber-500/30 bg-amber-500/10'
-              : 'text-purple-400 border-purple-500/30 bg-purple-500/10'
-          }`}>
-            {currentQuestion.difficulty}
-          </span>
+
+          <div className="flex items-center space-x-2">
+            {/* Audio Read Aloud Button */}
+            <button
+              onClick={handleToggleSpeak}
+              aria-label={isSpeaking ? 'Stop reading question aloud' : 'Read question aloud with text to speech'}
+              className={`p-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition border ${
+                isSpeaking 
+                  ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 animate-pulse' 
+                  : 'bg-slate-800 text-slate-300 border-slate-700 hover:text-white hover:bg-slate-700'
+              }`}
+              title="Read Question Aloud (TTS)"
+            >
+              {isSpeaking ? <VolumeX className="w-4 h-4 text-amber-400" /> : <Volume2 className="w-4 h-4 text-blue-400" />}
+              <span className="hidden sm:inline">{isSpeaking ? 'Stop Audio' : 'Read Aloud'}</span>
+            </button>
+
+            <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded border ${
+              currentQuestion.difficulty === 'beginner' 
+                ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10'
+                : 'text-amber-400 border-amber-500/30 bg-amber-500/10'
+            }`}>
+              {currentQuestion.difficulty}
+            </span>
+          </div>
         </div>
 
         {/* Question Prompt */}
@@ -237,7 +295,7 @@ export const PracticeQuiz = ({
         </h3>
 
         {/* Options List */}
-        <div className="space-y-3">
+        <div className="space-y-3" role="radiogroup" aria-label="Answer options">
           {currentQuestion.options.map((option, idx) => {
             const isSelected = selectedOption === idx;
             const isTargetCorrect = idx === currentQuestion.correctIndex;
@@ -246,14 +304,14 @@ export const PracticeQuiz = ({
             let circleStyle = 'border-slate-700 text-slate-400';
 
             if (isSelected && !isSubmitted) {
-              optionStyle = 'border-blue-500 bg-blue-500/10 text-white shadow-sm';
+              optionStyle = 'border-blue-500 bg-blue-500/10 text-white shadow-sm ring-1 ring-blue-500';
               circleStyle = 'border-blue-500 bg-blue-500 text-white';
             } else if (isSubmitted) {
               if (isTargetCorrect) {
-                optionStyle = 'border-emerald-500 bg-emerald-500/15 text-emerald-200';
+                optionStyle = 'border-emerald-500 bg-emerald-500/15 text-emerald-200 ring-1 ring-emerald-500';
                 circleStyle = 'border-emerald-500 bg-emerald-500 text-white';
               } else if (isSelected && !isTargetCorrect) {
-                optionStyle = 'border-rose-500 bg-rose-500/15 text-rose-200';
+                optionStyle = 'border-rose-500 bg-rose-500/15 text-rose-200 ring-1 ring-rose-500';
                 circleStyle = 'border-rose-500 bg-rose-500 text-white';
               } else {
                 optionStyle = 'border-slate-800/80 bg-slate-950/40 text-slate-500 opacity-60';
@@ -263,8 +321,12 @@ export const PracticeQuiz = ({
             return (
               <div
                 key={idx}
+                role="radio"
+                aria-checked={isSelected}
+                tabIndex={0}
+                onKeyDown={(e) => (e.key === ' ' || e.key === 'Enter') && handleSelectOption(idx)}
                 onClick={() => handleSelectOption(idx)}
-                className={`p-4 rounded-xl border text-sm transition-all duration-150 flex items-start space-x-3 cursor-pointer ${optionStyle}`}
+                className={`p-4 rounded-xl border text-sm transition-all duration-150 flex items-start space-x-3.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${optionStyle}`}
               >
                 <div className={`w-6 h-6 rounded-full border flex-shrink-0 flex items-center justify-center text-xs font-bold mt-0.5 ${circleStyle}`}>
                   {isSubmitted && isTargetCorrect ? (
@@ -276,6 +338,9 @@ export const PracticeQuiz = ({
                   )}
                 </div>
                 <span className="flex-1 leading-snug">{option}</span>
+                <kbd className="hidden sm:inline-block px-1.5 py-0.5 rounded bg-slate-800/80 border border-slate-700/60 font-mono text-[10px] text-slate-400">
+                  {idx + 1}
+                </kbd>
               </div>
             );
           })}
@@ -285,7 +350,7 @@ export const PracticeQuiz = ({
         <div className="pt-2 flex items-center justify-between">
           <button
             onClick={handleRestart}
-            className="text-xs text-slate-400 hover:text-white flex items-center space-x-1 transition"
+            className="text-xs text-slate-400 hover:text-white flex items-center space-x-1 transition focus-visible:ring-2 focus-visible:ring-blue-400 p-1 rounded"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Reset Session</span>
@@ -295,23 +360,32 @@ export const PracticeQuiz = ({
             <button
               onClick={handleSubmitAnswer}
               disabled={selectedOption === null}
-              className={`px-6 py-2.5 rounded-xl font-semibold text-sm transition flex items-center space-x-2 ${
+              className={`px-6 py-2.5 rounded-xl font-semibold text-sm transition flex items-center space-x-2 focus-visible:ring-2 focus-visible:ring-blue-400 ${
                 selectedOption !== null
                   ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/25'
                   : 'bg-slate-800 text-slate-500 cursor-not-allowed'
               }`}
             >
               <span>Submit Answer</span>
+              <kbd className="hidden sm:inline px-1.5 py-0.5 rounded bg-blue-700 text-blue-200 font-mono text-[10px]">Enter</kbd>
             </button>
           ) : (
             <button
               onClick={handleNextQuestion}
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-sm shadow-lg shadow-blue-500/25 flex items-center space-x-2 transition"
+              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-sm shadow-lg shadow-blue-500/25 flex items-center space-x-2 transition focus-visible:ring-2 focus-visible:ring-blue-400"
             >
               <span>Next Question</span>
               <ArrowRight className="w-4 h-4" />
+              <kbd className="hidden sm:inline px-1.5 py-0.5 rounded bg-blue-700 text-blue-200 font-mono text-[10px]">N</kbd>
             </button>
           )}
+        </div>
+
+        {/* Screen Reader Live Region */}
+        <div aria-live="polite" className="sr-only">
+          {isSubmitted && (isCorrect 
+            ? `Correct! ${currentQuestion.explanation.whyCorrect}` 
+            : `Incorrect. The correct answer was option ${String.fromCharCode(65 + currentQuestion.correctIndex)}.`)}
         </div>
 
         {/* Detailed Explanation & Why It's Wrong Panel */}
@@ -350,7 +424,7 @@ export const PracticeQuiz = ({
               </p>
             </div>
 
-            {/* Why Other Options Are Wrong (The Hackathon Killer Feature!) */}
+            {/* Why Other Options Are Wrong */}
             {currentQuestion.explanation.distractors && (
               <div className="bg-slate-950/80 border border-slate-800 p-4 sm:p-5 rounded-xl space-y-3">
                 <div className="flex items-center justify-between">
