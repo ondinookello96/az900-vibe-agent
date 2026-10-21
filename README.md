@@ -5,6 +5,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Hackathon Track](https://img.shields.io/badge/Track-Progress%3A%20Readiness%20Tracker-purple.svg)](#)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-ondinookello96%2Faz900--vibe--agent-blue.svg)](https://github.com/ondinookello96/az900-vibe-agent)
 [![AZ-900](https://img.shields.io/badge/Certification-AZ--900%20Azure%20Fundamentals-0078D4.svg)](https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/)
 [![Community](https://img.shields.io/badge/Community-%231MillionDevs-amber.svg)](https://1milliondevs.org)
 [![Status](https://img.shields.io/badge/Status-Unofficial%20Community%20Tool-emerald.svg)](#)
