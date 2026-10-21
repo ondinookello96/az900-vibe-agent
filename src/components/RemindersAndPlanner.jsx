@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Calendar, 
   Clock, 
@@ -9,7 +9,10 @@ import {
   ChevronRight,
   ShieldAlert,
   Send,
-  Zap
+  Zap,
+  Wifi,
+  WifiOff,
+  Timer
 } from 'lucide-react';
 import { AZ900_DOMAINS } from '../data/curriculum';
 import { NotificationService } from '../services/notificationService';
@@ -21,11 +24,29 @@ export const RemindersAndPlanner = ({
 }) => {
   const [examDate, setExamDate] = useState(profile.targetExamDate);
   const [dailyHours, setDailyHours] = useState(profile.dailyHours || 1.5);
-  const [preferredTime, setPreferredTime] = useState('20:00'); // 8:00 PM
+  const [preferredTime, setPreferredTime] = useState('20:00');
   const [notificationPermission, setNotificationPermission] = useState(NotificationService.getPermissionStatus());
   const [testSent, setTestSent] = useState(false);
+  const [isOnline, setIsOnline] = useState(NotificationService.isOnline());
+  const [offlineTimerCountdown, setOfflineTimerCountdown] = useState(null);
 
-  // Calculate days remaining
+  // Monitor online / offline network state
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    // Initialize Service Worker
+    NotificationService.initServiceWorker();
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
   const target = new Date(examDate);
   const now = new Date();
   const diffDays = Math.max(1, Math.ceil((target - now) / (1000 * 60 * 60 * 24)));
@@ -72,6 +93,37 @@ export const RemindersAndPlanner = ({
     setTimeout(() => setTestSent(false), 3000);
   };
 
+  // Trigger an offline-scheduled notification in 5 seconds
+  const handleScheduleOfflineTest = () => {
+    if (notificationPermission !== 'granted') {
+      handleEnableNotifications();
+      return;
+    }
+
+    const check = NotificationService.checkRevisionNeeds();
+    const reminderMsg = check.needsRevision 
+      ? `[Offline Nudge] ${check.suggestion}` 
+      : '[Offline Nudge] Time for 15 minutes of AZ-900 Architecture flashcards!';
+
+    NotificationService.scheduleOfflineNotification({
+      title: '⚡ Offline Study Reminder',
+      message: reminderMsg,
+      delaySeconds: 5
+    });
+
+    // Start 5 second visual countdown
+    setOfflineTimerCountdown(5);
+    const interval = setInterval(() => {
+      setOfflineTimerCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return null;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
   // Generate dynamic day-by-day study sprint
   const generateSprint = () => {
     const sprint = [];
@@ -110,30 +162,41 @@ export const RemindersAndPlanner = ({
         <div>
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-semibold mb-2">
             <Calendar className="w-3.5 h-3.5" />
-            <span>Automated Study Planner & Reminder Engine</span>
+            <span>Automated Study Planner & Offline Notification Engine</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-white">
             Exam Countdown & Smart Reminders
           </h2>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Stay on track with personalized pacing, automated daily alerts, and spaced revision reminders.
+            Personalized pacing, browser reminders, and offline-capable notifications powered by Service Workers.
           </p>
         </div>
 
-        <div className="flex items-center space-x-3">
+        {/* Live Network & Test Buttons */}
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Online/Offline Status Pill */}
+          <div className={`px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center space-x-1.5 ${
+            isOnline 
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
+              : 'bg-amber-500/10 border-amber-500/30 text-amber-400 animate-pulse'
+          }`}>
+            {isOnline ? <Wifi className="w-3.5 h-3.5" /> : <WifiOff className="w-3.5 h-3.5" />}
+            <span>{isOnline ? 'Network Online' : 'Offline Mode Active'}</span>
+          </div>
+
           <button
             onClick={handleSendTestNotification}
-            className="px-4 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 text-xs font-semibold flex items-center space-x-1.5 transition"
+            className="px-4 py-2 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 text-blue-300 text-xs font-semibold flex items-center space-x-1.5 transition"
           >
             <Send className="w-3.5 h-3.5" />
-            <span>{testSent ? 'Alert Dispatched!' : 'Send Test Reminder'}</span>
+            <span>{testSent ? 'Alert Dispatched!' : 'Send Instant Alert'}</span>
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Left Column: Schedule Configuration */}
+        {/* Left Column: Schedule Configuration & Offline PWA Capabilities */}
         <div className="lg:col-span-1 space-y-6">
           <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-5">
             <h3 className="font-bold text-white text-base flex items-center space-x-2">
@@ -188,31 +251,55 @@ export const RemindersAndPlanner = ({
             </button>
           </div>
 
-          {/* Browser Notifications Permissions Card */}
+          {/* Offline Push & PWA Notification Card */}
           <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
-            <h3 className="font-bold text-white text-base flex items-center space-x-2">
-              <Bell className="w-4 h-4 text-amber-400" />
-              <span>Browser Notifications</span>
-            </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Enable native system notifications so the agent can nudge you when your study time begins or when weak topics need spaced repetition.
+            <div className="flex items-center space-x-2">
+              <Zap className="w-4 h-4 text-amber-400" />
+              <h3 className="font-bold text-white text-base">Offline Push & Service Worker</h3>
+            </div>
+            
+            <p className="text-xs text-slate-300 leading-relaxed">
+              <strong>Yes!</strong> Because AfriCloud runs as a Progressive Web App (PWA) with a background Service Worker, study reminders fire locally <strong>even if your device has zero internet connection or is in airplane mode</strong>.
             </p>
 
-            <div className="flex items-center justify-between text-xs pt-1">
-              <span className="text-slate-300">Status:</span>
-              <span className={`font-semibold capitalize ${
-                notificationPermission === 'granted' ? 'text-emerald-400' : 'text-amber-400'
-              }`}>
-                {notificationPermission}
+            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-1 text-slate-400">
+              <div className="flex justify-between">
+                <span>PWA Service Worker:</span>
+                <strong className="text-emerald-400">Registered (sw.js)</strong>
+              </div>
+              <div className="flex justify-between">
+                <span>Notification Permission:</span>
+                <strong className={`capitalize ${notificationPermission === 'granted' ? 'text-emerald-400' : 'text-amber-400'}`}>
+                  {notificationPermission}
+                </strong>
+              </div>
+            </div>
+
+            {/* Interactive Offline Notification Demo Trigger */}
+            <div className="pt-1">
+              <button
+                onClick={handleScheduleOfflineTest}
+                disabled={offlineTimerCountdown !== null}
+                className="w-full py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-semibold text-xs transition flex items-center justify-center space-x-2"
+              >
+                <Timer className="w-3.5 h-3.5 text-amber-400" />
+                <span>
+                  {offlineTimerCountdown !== null 
+                    ? `Firing offline alert in ${offlineTimerCountdown}s...` 
+                    : 'Test Offline Notification (5s)'}
+                </span>
+              </button>
+              <span className="text-[10px] text-slate-500 block text-center mt-1.5">
+                Click, then disconnect your internet to watch the notification appear!
               </span>
             </div>
 
             {notificationPermission !== 'granted' && (
               <button
                 onClick={handleEnableNotifications}
-                className="w-full py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-semibold text-xs transition"
+                className="w-full py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition"
               >
-                Enable Browser Alerts
+                Grant Browser Notification Permission
               </button>
             )}
           </div>
@@ -275,7 +362,7 @@ export const RemindersAndPlanner = ({
             <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-400 flex items-start space-x-3">
               <Sparkles className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
               <span>
-                <strong>Agent Vibe Tip:</strong> Consistency beats cramming! Even 45 minutes of daily practice with the "Why It's Wrong" explanations will result in an 85%+ score on exam day.
+                <strong>Offline-Ready Guarantee:</strong> All questions, flashcards, diagnostic radar algorithms, and African analogy stories are bundled locally into the client. You can study on a bus, during a power outage, or in remote rural areas with zero mobile data!
               </span>
             </div>
 

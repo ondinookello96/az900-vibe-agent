@@ -1,0 +1,17 @@
+{
+  "name": "AfriCloud AZ-900: Adaptive Exam Prep",
+  "short_name": "AfriCloud",
+  "description": "AI-assisted, offline-capable AZ-900 exam preparation tool built for the #1MillionDevs Movement.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0f19",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
