@@ -55,6 +55,14 @@ The agent personalizes revision depending on how your brain absorbs cloud concep
   - **Français (Francophone Africa)**
 - Works 100% offline with a pre-computed knowledge base, or connects live to Google Gemini API via custom API key.
 
+### 6. ♿ Universal Accessibility & Disability Accommodations
+Targeting **WCAG 2.1 AAA** compliance, ensuring nobody is left behind:
+- **Blind & Low-Vision Learners:** Native Text-to-Speech (TTS) audio read-aloud for all questions and explanations; semantic ARIA live regions (`aria-live="polite"`); High-Contrast AAA mode (solid `#000000` with 7:1 ratio).
+- **Dyslexic Learners:** Dyslexia-friendly letter and word spacing mode; multimodal audio read-aloud options; plain-language summaries.
+- **Motor & Mobility Impaired Learners:** 100% keyboard navigable without a mouse (keys `1–4` to pick options, `Enter` to submit, `N` for next question, `Space` to flip flashcards).
+- **Deaf & Hard-of-Hearing Learners:** All audio chimes are paired with visual flash banners; zero audio-only dependencies.
+- **Neurodivergent Learners (ADHD / Autism / Vestibular Disorders):** Reduced motion toggle to disable confetti and pulsing effects; bite-sized micro-learning chunks.
+
 ---
 
 ## 🛠️ Tech Stack & Rapid Architecture
