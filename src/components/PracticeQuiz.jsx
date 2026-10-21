@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { 
   CheckCircle2, 
@@ -15,7 +15,13 @@ import {
   BookOpen,
   Volume2,
   VolumeX,
-  Keyboard
+  Keyboard,
+  AlertTriangle,
+  BarChart3,
+  Target,
+  Flame,
+  ShieldCheck,
+  ArrowUpRight
 } from 'lucide-react';
 import { PRACTICE_QUESTIONS } from '../data/questions';
 import { AZ900_DOMAINS } from '../data/curriculum';
@@ -27,24 +33,40 @@ export const PracticeQuiz = ({
   profile, 
   readiness, 
   onRecordAnswer, 
-  initialMode = 'adaptive',
-  a11ySettings = {}
+  initialMode = 'diagnostic',
+  a11ySettings = {},
+  onNavigateToRevision,
+  onNavigateToJourney
 }) => {
   const currentStyle = LEARNING_STYLES[profile.learningStyle] || LEARNING_STYLES.auditory;
-  const [mode, setMode] = useState(initialMode);
+  const [mode, setMode] = useState(initialMode); // 'diagnostic' (5 q) | 'adaptive' | 'domain' | 'all'
   const [selectedDomain, setSelectedDomain] = useState('all');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [scoreCount, setScoreCount] = useState({ correct: 0, total: 0 });
+  const [sessionAnswers, setSessionAnswers] = useState([]); // { question, subtopic, domainId, isCorrect }
   const [showDistractors, setShowDistractors] = useState(true);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
 
-  // Filter questions based on mode and weak areas
+  // Filter and prepare question pool
   const getFilteredQuestions = () => {
     let pool = [...PRACTICE_QUESTIONS];
 
-    if (mode === 'adaptive' && readiness.weakAreas.length > 0) {
+    if (mode === 'diagnostic') {
+      // Diagnostic mode: pick 5 representative questions spanning different domains
+      const concepts = pool.filter(q => q.domainId === 'cloud-concepts');
+      const architecture = pool.filter(q => q.domainId === 'architecture-services');
+      const governance = pool.filter(q => q.domainId === 'management-governance');
+      
+      const sample = [
+        ...concepts.slice(0, 2),
+        ...architecture.slice(0, 2),
+        ...governance.slice(0, 1)
+      ];
+      return sample.length > 0 ? sample : pool.slice(0, 5);
+    } else if (mode === 'adaptive' && readiness.weakAreas.length > 0) {
       const weakSubtopicIds = new Set(readiness.weakAreas.map(w => w.subtopicId));
       pool.sort((a, b) => {
         const aWeak = weakSubtopicIds.has(a.subtopic);
@@ -62,6 +84,7 @@ export const PracticeQuiz = ({
 
   const questions = getFilteredQuestions();
   const currentQuestion = questions[currentIndex] || questions[0];
+  const maxQuestions = mode === 'diagnostic' ? 5 : questions.length;
 
   // Stop TTS on question change
   useEffect(() => {
@@ -70,23 +93,20 @@ export const PracticeQuiz = ({
     setSelectedOption(null);
     setIsSubmitted(false);
 
-    // If autoReadAloud is enabled, read question and options automatically
-    if (a11ySettings.autoReadAloud && currentQuestion) {
+    if (a11ySettings.autoReadAloud && currentQuestion && !isCompleted) {
       const textToRead = `${currentQuestion.question}. Option A: ${currentQuestion.options[0]}. Option B: ${currentQuestion.options[1]}. Option C: ${currentQuestion.options[2]}. Option D: ${currentQuestion.options[3]}.`;
       setIsSpeaking(true);
       TTSService.speak(textToRead, { onEnd: () => setIsSpeaking(false) });
     }
-  }, [currentIndex, mode, selectedDomain, a11ySettings.autoReadAloud]);
+  }, [currentIndex, mode, selectedDomain, a11ySettings.autoReadAloud, isCompleted]);
 
-  // Full Keyboard Navigation for Motor/Mobility Impaired Learners
+  // Full Keyboard Navigation
   useEffect(() => {
     const handleKeyDown = (e) => {
-      // Don't trigger if focus is on an input or textarea
-      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName) || isCompleted) return;
 
       const key = e.key.toUpperCase();
 
-      // Number keys 1-4 or letters A-D
       if (!isSubmitted) {
         if (['1', 'A'].includes(key)) setSelectedOption(0);
         else if (['2', 'B'].includes(key)) setSelectedOption(1);
@@ -104,7 +124,7 @@ export const PracticeQuiz = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isSubmitted, selectedOption, currentIndex]);
+  }, [isSubmitted, selectedOption, currentIndex, isCompleted]);
 
   const handleSelectOption = (idx) => {
     if (isSubmitted) return;
@@ -122,9 +142,18 @@ export const PracticeQuiz = ({
       total: prev.total + 1
     }));
 
+    setSessionAnswers(prev => [
+      ...prev,
+      {
+        question: currentQuestion.question,
+        subtopic: currentQuestion.subtopic,
+        domainId: currentQuestion.domainId,
+        isCorrect
+      }
+    ]);
+
     onRecordAnswer(currentQuestion.subtopic, isCorrect);
 
-    // Play sounds & animations respecting a11y
     if (isCorrect) {
       NotificationService.playChime('success');
       if (!a11ySettings.reducedMotion) {
@@ -139,7 +168,6 @@ export const PracticeQuiz = ({
       NotificationService.playChime('alert');
     }
 
-    // Auto read feedback if requested
     if (a11ySettings.autoReadAloud) {
       const feedback = isCorrect 
         ? `Correct! ${currentQuestion.explanation.whyCorrect}` 
@@ -152,10 +180,26 @@ export const PracticeQuiz = ({
   const handleNextQuestion = () => {
     TTSService.stop();
     setIsSpeaking(false);
-    if (currentIndex < questions.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+    
+    // Check if diagnostic or drill finished
+    if (currentIndex + 1 >= maxQuestions) {
+      handleFinishQuiz();
     } else {
-      setCurrentIndex(0);
+      setCurrentIndex(prev => prev + 1);
+    }
+  };
+
+  const handleFinishQuiz = () => {
+    TTSService.stop();
+    setIsSpeaking(false);
+    setIsCompleted(true);
+    NotificationService.playChime('celebration');
+    if (!a11ySettings.reducedMotion) {
+      confetti({
+        particleCount: 80,
+        spread: 80,
+        origin: { y: 0.6 }
+      });
     }
   };
 
@@ -173,48 +217,297 @@ export const PracticeQuiz = ({
     }
   };
 
-  const handleRestart = () => {
+  const handleRestart = (newMode = 'diagnostic') => {
     TTSService.stop();
     setIsSpeaking(false);
+    setMode(newMode);
     setCurrentIndex(0);
     setSelectedOption(null);
     setIsSubmitted(false);
     setScoreCount({ correct: 0, total: 0 });
+    setSessionAnswers([]);
+    setIsCompleted(false);
+  };
+
+  // Group session answers by subtopic to evaluate weak areas from this practice session
+  const getSessionDiagnosticReport = () => {
+    const subtopicMap = {};
+    sessionAnswers.forEach(ans => {
+      if (!subtopicMap[ans.subtopic]) {
+        subtopicMap[ans.subtopic] = { correct: 0, total: 0, domainId: ans.domainId };
+      }
+      subtopicMap[ans.subtopic].total += 1;
+      if (ans.isCorrect) subtopicMap[ans.subtopic].correct += 1;
+    });
+
+    const weakTopics = [];
+    const strongTopics = [];
+
+    Object.entries(subtopicMap).forEach(([subtopic, stat]) => {
+      const accuracy = Math.round((stat.correct / stat.total) * 100);
+      if (accuracy < 70) {
+        weakTopics.push({ subtopic, accuracy, ...stat });
+      } else {
+        strongTopics.push({ subtopic, accuracy, ...stat });
+      }
+    });
+
+    // Also include any overall historical weak areas from readiness engine
+    readiness.weakAreas.forEach(w => {
+      if (!weakTopics.some(t => t.subtopic === w.subtopicId)) {
+        weakTopics.push({
+          subtopic: w.subtopicName || w.subtopicId,
+          accuracy: w.accuracy || 0,
+          domainId: w.domainId || 'general'
+        });
+      }
+    });
+
+    return { weakTopics, strongTopics, subtopicMap };
   };
 
   const isCorrect = isSubmitted && selectedOption === currentQuestion.correctIndex;
 
+  // ==========================================
+  // VIEW: DIAGNOSTIC & WEAK AREA REPORT SCREEN
+  // ==========================================
+  if (isCompleted) {
+    const { weakTopics, strongTopics } = getSessionDiagnosticReport();
+    const finalPercent = scoreCount.total > 0 ? Math.round((scoreCount.correct / scoreCount.total) * 100) : 0;
+    const isPassing = finalPercent >= 70;
+    const topWeakTopic = weakTopics[0]?.subtopic || 'azure-networking';
+
+    return (
+      <div className="max-w-4xl mx-auto space-y-6 animate-fade-in" role="region" aria-label="Diagnostic Weak Area Report">
+        
+        {/* Banner Card */}
+        <div className="bg-gradient-to-r from-slate-900 via-slate-900 to-indigo-950 border border-slate-800 rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-2xl">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
+            <div className="space-y-2">
+              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-300 text-xs font-bold uppercase tracking-wider">
+                <BarChart3 className="w-3.5 h-3.5" />
+                <span>Diagnostic Assessment Complete</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                Your Cognitive Weak Area Report
+              </h2>
+              <p className="text-sm text-slate-300 max-w-xl leading-relaxed">
+                Based on your practice questions, the agent has analyzed your performance against Microsoft Learn AZ-900 domain benchmarks.
+              </p>
+            </div>
+
+            {/* Score Ring / Pill */}
+            <div className="flex-shrink-0 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 text-center min-w-[150px]">
+              <span className="text-xs uppercase font-bold text-slate-400 block mb-1">Session Score</span>
+              <div className={`text-4xl font-extrabold font-mono ${isPassing ? 'text-emerald-400' : 'text-amber-400'}`}>
+                {finalPercent}%
+              </div>
+              <span className="text-xs text-slate-400 mt-1 block">
+                {scoreCount.correct} of {scoreCount.total} Correct
+              </span>
+              <span className={`inline-block mt-2 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                isPassing ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'
+              }`}>
+                {isPassing ? 'Passing Mark Hit' : 'Needs Targeted Revision'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Actionable Weak Areas Callout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          {/* Priority Focus: Weak Areas (<70%) */}
+          <div className="bg-slate-900/90 border border-amber-500/30 rounded-2xl p-6 space-y-4 relative overflow-hidden">
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-bold text-amber-400 flex items-center space-x-2">
+                <AlertTriangle className="w-5 h-5 text-amber-400" />
+                <span>Areas to Focus On ({weakTopics.length})</span>
+              </h3>
+              <span className="text-xs text-amber-300/80 bg-amber-500/10 px-2 py-0.5 rounded font-mono font-bold">
+                Accuracy &lt; 70%
+              </span>
+            </div>
+
+            <p className="text-xs text-slate-300">
+              The agent has flagged these concepts as high-risk blindspots for your AZ-900 exam:
+            </p>
+
+            {weakTopics.length === 0 ? (
+              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs flex items-center space-x-2">
+                <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+                <span>Incredible! No critical weak areas identified in this session.</span>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {weakTopics.map((topic, i) => (
+                  <div key={i} className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between gap-3">
+                    <div>
+                      <div className="font-semibold text-sm text-slate-200 capitalize">
+                        {topic.subtopic.replace(/-/g, ' ')}
+                      </div>
+                      <div className="text-[11px] text-slate-400 flex items-center space-x-2 mt-0.5">
+                        <span className="text-rose-400 font-bold">{topic.accuracy}% Accuracy</span>
+                        <span>•</span>
+                        <span>High Priority</span>
+                      </div>
+                    </div>
+
+                    {onNavigateToRevision && (
+                      <button
+                        onClick={() => onNavigateToRevision(topic.subtopic)}
+                        className="px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 text-xs font-semibold flex items-center space-x-1 transition"
+                      >
+                        <span>Revise</span>
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Mastered Strengths */}
+          <div className="bg-slate-900/90 border border-emerald-500/30 rounded-2xl p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-bold text-emerald-400 flex items-center space-x-2">
+                <ShieldCheck className="w-5 h-5 text-emerald-400" />
+                <span>Mastered Strengths ({strongTopics.length})</span>
+              </h3>
+              <span className="text-xs text-emerald-300/80 bg-emerald-500/10 px-2 py-0.5 rounded font-mono font-bold">
+                Accuracy &ge; 70%
+              </span>
+            </div>
+
+            <p className="text-xs text-slate-300">
+              You are retaining these concepts well. Keep them sharp with occasional flashcard reviews:
+            </p>
+
+            {strongTopics.length === 0 ? (
+              <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 text-slate-400 text-xs">
+                Complete more questions to validate your strong areas.
+              </div>
+            ) : (
+              <div className="space-y-2.5">
+                {strongTopics.map((topic, i) => (
+                  <div key={i} className="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 flex items-center justify-between">
+                    <span className="text-sm text-slate-200 capitalize">
+                      {topic.subtopic.replace(/-/g, ' ')}
+                    </span>
+                    <span className="text-xs font-bold text-emerald-400 font-mono">
+                      {topic.accuracy}%
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+        </div>
+
+        {/* Personalized "Rafiki" AI Revision Plan */}
+        <div 
+          className="p-6 rounded-2xl border space-y-3"
+          style={{ 
+            backgroundColor: `${currentStyle.color}08`, 
+            borderColor: `${currentStyle.color}40` 
+          }}
+        >
+          <div className="flex items-center space-x-2">
+            <Lightbulb className="w-5 h-5" style={{ color: currentStyle.color }} />
+            <h4 className="text-sm font-bold uppercase tracking-wider" style={{ color: currentStyle.color }}>
+              Rafiki's Action Plan for {currentStyle.name}s:
+            </h4>
+          </div>
+          <p className="text-sm text-slate-200 leading-relaxed">
+            Your top focus area is <strong>{topWeakTopic.replace(/-/g, ' ')}</strong>. Because you prefer <strong>{currentStyle.name} learning</strong>, we recommend reviewing this topic using {currentStyle.name === 'Auditory' ? 'real-world African analogies like M-Pesa float and regional market hubs' : currentStyle.name === 'Visual' ? 'interactive architecture diagrams' : 'hands-on CLI sandboxes'} before taking another test round.
+          </p>
+
+          <div className="pt-2 flex flex-wrap items-center gap-3">
+            {onNavigateToRevision && (
+              <button
+                onClick={() => onNavigateToRevision(topWeakTopic)}
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs sm:text-sm shadow-lg shadow-blue-500/20 flex items-center space-x-2 transition"
+              >
+                <span>Revise {topWeakTopic.replace(/-/g, ' ')} Now</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            )}
+
+            {onNavigateToJourney && (
+              <button
+                onClick={onNavigateToJourney}
+                className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs sm:text-sm transition flex items-center space-x-2"
+              >
+                <span>View Road Map Pitstops</span>
+              </button>
+            )}
+
+            <button
+              onClick={() => handleRestart('diagnostic')}
+              className="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 hover:bg-slate-800 text-slate-300 font-semibold text-xs sm:text-sm transition flex items-center space-x-2"
+            >
+              <RotateCcw className="w-4 h-4" />
+              <span>Retest (New 5-Question Sprint)</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    );
+  }
+
+  // ==========================================
+  // VIEW: ACTIVE QUIZ QUESTIONS
+  // ==========================================
   return (
     <div className="max-w-4xl mx-auto space-y-6 animate-fade-in" role="region" aria-label="Practice Quiz">
       
       {/* Header & Mode Controls */}
       <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
         <div>
+          <div className="inline-flex items-center space-x-2 px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-300 text-[11px] font-bold uppercase tracking-wider mb-1">
+            <span>Practice First &bull; Instant Weak Area Diagnosis</span>
+          </div>
           <h2 className="text-xl font-bold text-white flex items-center space-x-2">
             <Sparkles className="w-5 h-5 text-blue-400" />
             <span>Smart Practice & Assessment Hub</span>
           </h2>
-          <p className="text-xs text-slate-400 mt-1">
-            Instant feedback, accessible screen reader cues, and deep "Why It's Wrong" distractor explanations.
+          <p className="text-xs text-slate-400 mt-0.5">
+            Answer questions first to generate an instant diagnosis of what you need to revise.
           </p>
         </div>
 
         {/* Mode Selector */}
         <div className="flex flex-wrap items-center gap-2">
           <button
-            onClick={() => { setMode('adaptive'); setCurrentIndex(0); }}
+            onClick={() => handleRestart('diagnostic')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition ${
+              mode === 'diagnostic'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+            }`}
+          >
+            <Zap className="w-3.5 h-3.5 text-amber-300" />
+            <span>5-Question Diagnostic Sprint</span>
+          </button>
+
+          <button
+            onClick={() => handleRestart('adaptive')}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition ${
               mode === 'adaptive'
                 ? 'bg-blue-600 text-white shadow-sm'
                 : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
             }`}
           >
-            <Zap className="w-3.5 h-3.5" />
-            <span>Agent Adaptive (Weak Areas)</span>
+            <span>Weak Areas Drill</span>
           </button>
 
           <button
-            onClick={() => { setMode('all'); setCurrentIndex(0); }}
+            onClick={() => handleRestart('all')}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
               mode === 'all'
                 ? 'bg-blue-600 text-white shadow-sm'
@@ -223,29 +516,27 @@ export const PracticeQuiz = ({
           >
             <span>All Questions</span>
           </button>
-
-          <button
-            onClick={() => { setMode('domain'); setCurrentIndex(0); }}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
-              mode === 'domain'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-            }`}
-          >
-            <span>Domain Drill</span>
-          </button>
         </div>
       </div>
 
       {/* Progress & Live Score Bar */}
       <div className="flex items-center justify-between text-xs text-slate-400 px-1">
         <span className="font-semibold text-slate-300">
-          Question {currentIndex + 1} of {questions.length}
+          Question {currentIndex + 1} of {maxQuestions} {mode === 'diagnostic' && '(Diagnostic Mode)'}
         </span>
         <div className="flex items-center space-x-4">
           <span className="hidden sm:inline">Shortcuts: <kbd className="px-1 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300 font-mono text-[10px]">1-4</kbd> to pick, <kbd className="px-1 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300 font-mono text-[10px]">Enter</kbd> to submit</span>
           <span className="text-slate-600 hidden sm:inline">|</span>
           <span>Score: <strong className="text-emerald-400">{scoreCount.correct}</strong> / {scoreCount.total}</span>
+          
+          {scoreCount.total > 0 && (
+            <button
+              onClick={handleFinishQuiz}
+              className="text-xs text-amber-400 hover:text-amber-300 font-semibold underline underline-offset-2 ml-2"
+            >
+              Finish & View Report →
+            </button>
+          )}
         </div>
       </div>
 
@@ -349,11 +640,11 @@ export const PracticeQuiz = ({
         {/* Action Controls: Submit or Next */}
         <div className="pt-2 flex items-center justify-between">
           <button
-            onClick={handleRestart}
+            onClick={() => handleRestart(mode)}
             className="text-xs text-slate-400 hover:text-white flex items-center space-x-1 transition focus-visible:ring-2 focus-visible:ring-blue-400 p-1 rounded"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span>Reset Session</span>
+            <span>Reset Questions</span>
           </button>
 
           {!isSubmitted ? (
@@ -374,7 +665,7 @@ export const PracticeQuiz = ({
               onClick={handleNextQuestion}
               className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-sm shadow-lg shadow-blue-500/25 flex items-center space-x-2 transition focus-visible:ring-2 focus-visible:ring-blue-400"
             >
-              <span>Next Question</span>
+              <span>{currentIndex + 1 >= maxQuestions ? 'View Weak Area Report' : 'Next Question'}</span>
               <ArrowRight className="w-4 h-4" />
               <kbd className="hidden sm:inline px-1.5 py-0.5 rounded bg-blue-700 text-blue-200 font-mono text-[10px]">N</kbd>
             </button>

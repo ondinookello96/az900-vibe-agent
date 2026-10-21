@@ -32,7 +32,8 @@ export const ProgressiveMasterJourney = ({
   masteryState, 
   onRecordAnswer, 
   onOpenStudyBuddy,
-  onOpenPlanner 
+  onOpenPlanner,
+  onStartDiagnostic
 }) => {
   const currentStyle = LEARNING_STYLES[profile.learningStyle] || LEARNING_STYLES.auditory;
 
@@ -164,6 +165,33 @@ export const ProgressiveMasterJourney = ({
           </div>
         </div>
       </div>
+
+      {/* Quick Action: Practice First / Diagnostic Assessment */}
+      {onStartDiagnostic && (
+        <div className="bg-slate-900/90 border border-blue-500/30 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
+          <div className="flex items-center space-x-3.5">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center flex-shrink-0 text-blue-400">
+              <Zap className="w-5 h-5 text-amber-400" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-white flex items-center space-x-1.5">
+                <span>Want to test yourself first?</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-300">Fast 3-Min Assessment</span>
+              </h4>
+              <p className="text-xs text-slate-300 mt-0.5">
+                Take a 5-question diagnostic sprint to immediately generate your <strong>Weak Areas Report</strong> and tailored focus plan.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onStartDiagnostic}
+            className="flex-shrink-0 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs sm:text-sm transition flex items-center space-x-1.5 shadow-md shadow-blue-500/20"
+          >
+            <span>Take Diagnostic Quiz</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* The Progressive Master Stepper (Roadmap) */}
       <div className="space-y-8">

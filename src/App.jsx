@@ -151,6 +151,10 @@ export function App() {
             onRecordAnswer={handleRecordAnswer}
             onOpenStudyBuddy={() => setActiveTab('buddy')}
             onOpenPlanner={() => setActiveTab('planner')}
+            onStartDiagnostic={() => {
+              setQuizMode('diagnostic');
+              setActiveTab('quiz');
+            }}
           />
         )}
 
@@ -166,7 +170,7 @@ export function App() {
           />
         )}
 
-        {/* Dedicated practice drill (accessible from deep links or weak areas) */}
+        {/* Dedicated practice drill & diagnostic report */}
         {activeTab === 'quiz' && (
           <PracticeQuiz
             profile={profile}
@@ -174,6 +178,11 @@ export function App() {
             onRecordAnswer={handleRecordAnswer}
             initialMode={quizMode}
             a11ySettings={a11ySettings}
+            onNavigateToRevision={(topicId) => {
+              setTargetSubtopicId(topicId);
+              setActiveTab('revision');
+            }}
+            onNavigateToJourney={() => setActiveTab('journey')}
           />
         )}
 

@@ -36,7 +36,8 @@ export const Navbar = ({
   const diffDays = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
 
   const navItems = [
-    { id: 'journey', label: 'Progressive Master Path', icon: 'Map', badge: 'Main Journey' },
+    { id: 'journey', label: 'Progressive Road Map', icon: 'Map' },
+    { id: 'quiz', label: '⚡ Practice First', icon: 'Zap' },
     { id: 'dashboard', label: 'Readiness & Weak Areas', icon: 'BarChart3' },
     { id: 'buddy', label: 'AI Study Buddy', icon: 'Headphones' },
     { id: 'planner', label: 'Exam Countdown & Alerts', icon: 'Calendar' },
