@@ -7,12 +7,12 @@ import {
   Key, 
   Compass, 
   HelpCircle, 
-  Sparkles,
-  BookOpen,
-  Terminal,
-  Eye,
-  Headphones,
-  Accessibility
+  Sparkles, 
+  BookOpen, 
+  Headphones, 
+  Accessibility,
+  Map,
+  BarChart3
 } from 'lucide-react';
 import { LEARNING_STYLES } from '../data/learningStyles';
 
@@ -23,9 +23,9 @@ export const Navbar = ({
   readiness, 
   unreadCount, 
   onOpenNotifications, 
-  onOpenApiKeyModal,
-  onOpenStyleModal,
-  onOpenA11yModal
+  onOpenApiKeyModal, 
+  onOpenStyleModal, 
+  onOpenA11yModal 
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const currentStyle = LEARNING_STYLES[profile.learningStyle] || LEARNING_STYLES.auditory;
@@ -36,12 +36,10 @@ export const Navbar = ({
   const diffDays = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
 
   const navItems = [
-    { id: 'dashboard', label: 'Agent Dashboard', icon: 'Compass' },
-    { id: 'quiz', label: 'Smart Practice', icon: 'Sparkles' },
-    { id: 'revision', label: 'Adaptive Revision', icon: 'BookOpen' },
-    { id: 'flashcards', label: 'Flashcard Coach', icon: 'HelpCircle' },
-    { id: 'planner', label: 'Study Planner', icon: 'Calendar' },
+    { id: 'journey', label: 'Progressive Master Path', icon: 'Map', badge: 'Main Journey' },
+    { id: 'dashboard', label: 'Readiness & Weak Areas', icon: 'BarChart3' },
     { id: 'buddy', label: 'AI Study Buddy', icon: 'Headphones' },
+    { id: 'planner', label: 'Exam Countdown & Alerts', icon: 'Calendar' },
   ];
 
   return (
@@ -50,7 +48,7 @@ export const Navbar = ({
         <div className="flex items-center justify-between h-16">
           
           {/* Logo & Movement Tag */}
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('dashboard')}>
+          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('journey')}>
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-amber-500 flex items-center justify-center shadow-lg shadow-blue-500/20">
               <Cloud className="w-6 h-6 text-white" />
             </div>
@@ -63,11 +61,11 @@ export const Navbar = ({
                   #1MillionDevs
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400">Adaptive Exam Prep Agent</p>
+              <p className="text-[11px] text-slate-400">Progressive Mastery Agent</p>
             </div>
           </div>
 
-          {/* Desktop Navigation Links */}
+          {/* Desktop Navigation Links: Streamlined for Progressive Journey */}
           <nav className="hidden md:flex items-center space-x-1 lg:space-x-2" role="navigation">
             {navItems.map((item) => {
               const isActive = activeTab === item.id;
@@ -75,9 +73,9 @@ export const Navbar = ({
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`px-3 py-2 rounded-lg text-xs lg:text-sm font-medium transition-all duration-150 flex items-center space-x-1.5 focus-visible:ring-2 focus-visible:ring-blue-400 ${
+                  className={`px-3 py-2 rounded-xl text-xs lg:text-sm font-semibold transition-all duration-150 flex items-center space-x-1.5 focus-visible:ring-2 focus-visible:ring-blue-400 ${
                     isActive
-                      ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30 shadow-sm'
+                      ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25 ring-1 ring-blue-400'
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                   }`}
                 >
@@ -87,7 +85,7 @@ export const Navbar = ({
             })}
           </nav>
 
-          {/* Right Status Indicators & Accessibility Button */}
+          {/* Right Status Indicators & Quick Actions */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             
             {/* Learning Style Pill */}
@@ -124,7 +122,7 @@ export const Navbar = ({
             <button
               onClick={onOpenA11yModal}
               className="p-2 rounded-lg text-sky-400 bg-sky-950/30 border border-sky-800/50 hover:bg-sky-900/40 transition focus-visible:ring-2 focus-visible:ring-sky-400"
-              title="Accessibility & Inclusion Settings (TTS, Contrast, Dyslexia Fonts, Shortcuts)"
+              title="Accessibility & Accommodations (TTS, Contrast, Dyslexia Fonts, Shortcuts)"
               aria-label="Accessibility & Accommodations"
             >
               <Accessibility className="w-4 h-4" />
@@ -189,7 +187,7 @@ export const Navbar = ({
               }}
               className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium ${
                 activeTab === item.id
-                  ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
+                  ? 'bg-blue-600 text-white shadow'
                   : 'text-slate-300 hover:bg-slate-800'
               }`}
             >

@@ -13,15 +13,20 @@
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     <script>
-      // Register Progressive Web App Service Worker for offline capability & local notifications
+      // Clear legacy service worker caches to ensure instantaneous live dev reloading
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').then((reg) => {
-            console.log('AfriCloud PWA Service Worker Registered:', reg.scope);
-          }).catch((err) => {
-            console.warn('PWA registration error:', err);
-          });
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for (let registration of registrations) {
+            registration.unregister();
+          }
         });
+        if ('caches' in window) {
+          caches.keys().then(function(names) {
+            for (let name of names) {
+              caches.delete(name);
+            }
+          });
+        }
       }
     </script>
   </body>

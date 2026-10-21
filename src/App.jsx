@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
+import { ProgressiveMasterJourney } from './components/ProgressiveMasterJourney';
 import { LearningJourneyTracker } from './components/LearningJourneyTracker';
 import { PracticeQuiz } from './components/PracticeQuiz';
 import { RevisionSuggestions } from './components/RevisionSuggestions';
@@ -26,7 +27,9 @@ export function App() {
   const [profile, setProfile] = useState(() => StorageService.getProfile());
   const [masteryState, setMasteryState] = useState(() => StorageService.getMasteryState());
   const [notifications, setNotifications] = useState(() => StorageService.getNotifications());
-  const [activeTab, setActiveTab] = useState('dashboard');
+  
+  // Default to the Guided Progressive Master Journey!
+  const [activeTab, setActiveTab] = useState('journey');
   const [targetSubtopicId, setTargetSubtopicId] = useState(null);
   const [quizMode, setQuizMode] = useState('adaptive');
 
@@ -97,7 +100,7 @@ export function App() {
     StorageService.saveNotifications(updated);
     setIsNotifDrawerOpen(false);
     if (notif.title.includes('Weak Area')) {
-      setActiveTab('revision');
+      setActiveTab('dashboard');
     } else if (notif.title.includes('Countdown') || notif.title.includes('Study')) {
       setActiveTab('planner');
     }
@@ -138,6 +141,20 @@ export function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8" id="main-content">
+        
+        {/* 🗺️ Main Experience: Progressive Master Journey Roadmap */}
+        {activeTab === 'journey' && (
+          <ProgressiveMasterJourney
+            profile={profile}
+            readiness={readiness}
+            masteryState={masteryState}
+            onRecordAnswer={handleRecordAnswer}
+            onOpenStudyBuddy={() => setActiveTab('buddy')}
+            onOpenPlanner={() => setActiveTab('planner')}
+          />
+        )}
+
+        {/* 📊 Cognitive Readiness & Weak Areas Tracker */}
         {activeTab === 'dashboard' && (
           <LearningJourneyTracker
             readiness={readiness}
@@ -149,6 +166,7 @@ export function App() {
           />
         )}
 
+        {/* Dedicated practice drill (accessible from deep links or weak areas) */}
         {activeTab === 'quiz' && (
           <PracticeQuiz
             profile={profile}
@@ -159,6 +177,7 @@ export function App() {
           />
         )}
 
+        {/* Dedicated revision hub */}
         {activeTab === 'revision' && (
           <RevisionSuggestions
             profile={profile}
@@ -175,6 +194,7 @@ export function App() {
           />
         )}
 
+        {/* 📅 Study Planner & Reminders */}
         {activeTab === 'planner' && (
           <RemindersAndPlanner
             profile={profile}
@@ -183,6 +203,7 @@ export function App() {
           />
         )}
 
+        {/* 🤖 AI Study Buddy ("Rafiki") */}
         {activeTab === 'buddy' && (
           <AIStudyBuddy
             profile={profile}
@@ -194,7 +215,7 @@ export function App() {
       <footer className="border-t border-slate-800/80 bg-slate-950/80 py-8 px-4 text-center text-xs text-slate-500">
         <div className="max-w-4xl mx-auto space-y-3">
           <div className="flex items-center justify-center space-x-2 text-slate-400">
-            <span>Built with vibe coding, universal accessibility, and AI for the</span>
+            <span>Progressive Mastery Architecture for the</span>
             <strong className="text-blue-400">#1MillionDevs Movement</strong>
             <span>across Africa.</span>
           </div>
@@ -202,7 +223,7 @@ export function App() {
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-[11px] text-slate-400">
             <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
             <span>
-              <strong>Unofficial Community Study Tool:</strong> This platform is not affiliated with, endorsed by, or sponsored by Microsoft Corporation. All content is strictly pedagogical and grounded on public Microsoft Learn outlines.
+              <strong>Unofficial Community Study Tool:</strong> Not affiliated with Microsoft Corporation. Grounded strictly on the public Microsoft Learn AZ-900 skills outline.
             </span>
           </div>
 
@@ -212,12 +233,12 @@ export function App() {
               className="text-sky-400 hover:underline flex items-center space-x-1"
             >
               <Accessibility className="w-3.5 h-3.5" />
-              <span>Accessibility & Inclusion Center</span>
+              <span>Accessibility Hub</span>
             </button>
             <span>•</span>
-            <span>WCAG 2.1 AAA Target</span>
+            <span>Target: AZ-900 Microsoft Azure Fundamentals</span>
             <span>•</span>
-            <span>AZ-900 Vibe Coding Hackathon 2026</span>
+            <span>Vibe Coding Hackathon 2026</span>
           </div>
         </div>
       </footer>
