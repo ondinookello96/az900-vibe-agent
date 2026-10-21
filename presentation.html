@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AfriCloud AZ-900 Prep | Pitch Deck Presentation</title>
+  <title>AfriCloud AZ-900 Prep | Official Pitch Deck</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -108,12 +108,6 @@
       gap: 24px;
       flex: 1;
     }
-    .grid-3 {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 20px;
-      flex: 1;
-    }
     .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -135,7 +129,7 @@
       opacity: 0.5;
     }
     .card-title {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 700;
       margin-bottom: 14px;
       display: flex;
@@ -174,11 +168,11 @@
       background: #090e1a;
       border: 1px dashed var(--amber);
       border-radius: 10px;
-      padding: 12px;
+      padding: 10px 14px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--amber);
-      margin: 10px 0 14px;
+      margin: 6px 0 12px;
       line-height: 1.4;
     }
     .qr-container {
@@ -257,214 +251,154 @@
       border-color: var(--amber);
       color: var(--amber);
     }
-    .step-pill {
-      background: rgba(245, 158, 11, 0.15);
-      color: var(--amber);
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-weight: 700;
-      font-size: 0.82rem;
-      margin-right: 4px;
-    }
-    @media print {
-      body {
-        overflow: visible;
-        background: white;
-        color: black;
-      }
-      .controls-bar, .speaker-notes-drawer {
-        display: none !important;
-      }
-      .slide {
-        display: flex !important;
-        page-break-after: always;
-        height: 100vh;
-        max-height: none;
-      }
-      .deck-container {
-        max-height: none;
-        max-width: none;
-        padding: 20px;
-      }
-    }
   </style>
 </head>
 <body>
 
 <div class="deck-container">
   <!-- SLIDE 1 -->
-  <div class="slide active" id="slide-1" data-notes="Hello judges! Like many of you in the #1MillionDevs movement, I prepared for AZ-900 and experienced the anxiety of studying blind. You spend weeks memorizing answers, but you still ask yourself: 'Am I actually ready to risk $99 on the real exam?' Traditional prep tools give you a raw test percentage with zero cognitive diagnosis. We built the tool we wished we had when we started our cloud journey.">
+  <div class="slide active" id="slide-1" data-notes="Welcome judges! Criterion 1 is Learning Value (25%), and AfriCloud was engineered from the ground up for genuine exam readiness. Unlike flat quiz apps that give a false sense of confidence, we model Microsoft's exact syllabus weighting: 27.5% Concepts, 37.5% Architecture, and 35% Governance. More importantly, we eliminate the 'Why Is This Wrong' gap—every scenario question breaks down all three wrong answers, paired with active-recall flashcard memory locks.">
     <div class="header-bar">
-      <div class="badge">Vibe Coding Hackathon 2026 &bull; Track: 📊 Readiness Tracker</div>
-      <h1 class="title">AfriCloud AZ-900: Cognitive Readiness & Adaptive Coach</h1>
-      <p class="subtitle">Turning Abstract Cloud Jargon into Confident Exam Readiness for Africa's Next 1 Million Developers</p>
+      <div class="badge">Official Rubric Criterion 1 &bull; 📚 Learning Value (25%)</div>
+      <h1 class="title">AfriCloud AZ-900: Rigorous Pedagogical Mastery</h1>
+      <p class="subtitle">Genuine Exam Preparation Calibrated to Microsoft's Official 700/1000 Passing Standard</p>
     </div>
     <div class="grid-2">
       <div class="card">
-        <h2 class="card-title red">⚠️ The Barrier: Studying Blind</h2>
+        <h2 class="card-title cyan">📋 Official Syllabus Calibration</h2>
+        <div class="formula-box">
+          R_exam = 0.275 · Concepts + 0.375 · Architecture + 0.350 · Governance
+        </div>
         <ul class="bullet-list">
-          <li><strong>High-Stakes Financial Anxiety:</strong> $99 certification vouchers expiring in 14 days; learners memorize brain dumps without knowing if they will actually pass.</li>
-          <li><strong>The 700/1000 Threshold:</strong> AZ-900 requires 70% weighted mastery across 3 distinct domains, not just a flat quiz score.</li>
-          <li><strong>Disconnected Mental Models:</strong> Abstract US/EU enterprise banking metaphors fail to anchor in the daily realities of African students.</li>
-          <li><strong>The Blind Spot Trap:</strong> Students spend 80% of revision time on concepts they already know, neglecting silent weak points.</li>
+          <li><strong>Strict Microsoft Learn Alignment:</strong> Covers all 3 core domains (Cloud Concepts 27.5%, Architecture 37.5%, Governance 35.0%).</li>
+          <li><strong>Weighted Passing Probability:</strong> Models real-time probability against the Pearson VUE 700/1000 threshold rather than naive question counts.</li>
+          <li><strong>30-Second Baseline Diagnostic:</strong> Instantly benchmarks incoming learners and adapts their starting missions.</li>
+          <li><strong>Voucher Protection:</strong> Prevents premature exam booking and $99 voucher waste until readiness hits 75%+.</li>
         </ul>
       </div>
       <div class="card">
-        <h2 class="card-title cyan">💡 The 3 Critical Learning Blindspots</h2>
+        <h2 class="card-title amber">🧠 Cognitive Lock & Distractor Analysis</h2>
         <ul class="bullet-list">
-          <li><strong>1. Jargon Overload:</strong> Terms like <em>Availability Zones</em>, <em>IaaS vs PaaS</em>, and <em>Blob Archive Rehydration</em> feel alien without local context.</li>
-          <li><strong>2. The 'Why Is This Wrong?' Gap:</strong> Standard mock exams show option A is correct, but leave learners guessing why B, C, and D are traps. Real exam questions test edge cases.</li>
-          <li><strong>3. The Static Percentage Illusion:</strong> Getting 8/10 on random questions does not predict passing. Without syllabus domain weighting, test-takers walk in unprepared.</li>
+          <li><strong>The 'Why It's Wrong' Gap:</strong> Standard mock dumps only indicate the correct letter. AfriCloud breaks down WHY all 3 distractors fail.</li>
+          <li><strong>Active Recall Flashcards:</strong> Spaced-repetition memory locks for high-yield parameters (SLA 99.9%, CapEx/OpEx, Blob tiers).</li>
+          <li><strong>Automated Weak Area Pitstops:</strong> Subtopics scoring &lt;70% trigger remediation pitstops directly on the road map.</li>
+          <li><strong>Real-World Scenario Questions:</strong> Tests enterprise trade-offs instead of rote trivia memorization.</li>
         </ul>
       </div>
     </div>
   </div>
 
   <!-- SLIDE 2 -->
-  <div class="slide" id="slide-2" data-notes="Meet AfriCloud AZ-900. Instead of a static quiz app, it's an intelligent learning companion. As you see on screen, our Readiness Gauge models your probability of passing based on Microsoft's exact domain weighting. When a weakness is detected—like Azure Networking dropping below 70%—our closed-loop engine doesn't just show a red bar: it automatically schedules an offline study alert, flags a Weakness Pitstop on your roadmap, and provides targeted revision in your personal learning style.">
+  <div class="slide" id="slide-2" data-notes="For Prompt Engineering (20%), we built 'Rafiki'—a culturally grounded cloud mentor. Our system instructions in geminiService.js enforce strict curriculum boundaries to prevent hallucination, while dynamically injecting the learner's VARK learning style and dialect. Abstract cloud concepts like High Availability and ExpressRoute are systematically mapped to everyday African realities like M-Pesa float distribution and SGR rail networks.">
     <div class="header-bar">
-      <div class="badge amber">Solution Architecture & Product Demo &bull; 25 Points</div>
-      <h1 class="title">The Cognitive Readiness Engine & Progressive Mastery Loop</h1>
-      <p class="subtitle">Real-Time Weighted Exam Modeling With Automated Weak Area Pitstops</p>
+      <div class="badge amber">Official Rubric Criterion 2 &bull; 🔍 Prompt Engineering (20%)</div>
+      <h1 class="title">Intelligent AI Architecture: 'Rafiki' Cloud Mentor</h1>
+      <p class="subtitle">Multi-Tier Guardrails, Grounded African Metaphors, and Structured Dynamic Ingestion</p>
     </div>
-    <div class="grid-3">
+    <div class="grid-2">
       <div class="card">
-        <h2 class="card-title cyan">1. Multi-Signal Readiness</h2>
-        <div class="formula-box">
-          R_exam = 0.275 · Concepts<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ 0.375 · Architecture<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ 0.350 · Governance
-        </div>
+        <h2 class="card-title cyan">🤖 System Prompt Guardrails & Structure</h2>
         <ul class="bullet-list">
-          <li><strong>Dynamic Passing Probability:</strong> Calibrates test readiness against the 700/1000 passing mark.</li>
-          <li><strong>Weakness Radar (&lt;70%):</strong> Instantly highlights failing subtopics (e.g. Azure Networking at 0%).</li>
-          <li><strong>30s Baseline Diagnostic:</strong> Tailors initial mission path upon onboarding.</li>
+          <li><strong>Curriculum Boundary Enforcement:</strong> Locks Gemini strictly inside the AZ-900 syllabus in <code>geminiService.js</code>, preventing hallucinations.</li>
+          <li><strong>Dynamic Context Injection:</strong> Ingests learner's VARK style, detected topic weakness, and preferred African dialect in real time.</li>
+          <li><strong>Structured Output Schemas:</strong> Enforces clean Markdown tradeoffs, ASCII architecture diagrams, and CLI step-by-steps.</li>
+          <li><strong>Deterministic Fallback Trees:</strong> Pre-engineered response trees ensure seamless offline mentorship when API keys or internet are unavailable.</li>
         </ul>
       </div>
       <div class="card">
-        <h2 class="card-title green">2. Progressive Master Loop</h2>
+        <h2 class="card-title green">🌍 Purposeful African Pedagogical Metaphors</h2>
         <ul class="bullet-list">
-          <li><span class="step-pill">1</span><strong>Explore & Learn:</strong> Personalized by VARK style (Visual map, African analogy, or CLI).</li>
-          <li><span class="step-pill">2</span><strong>Practice Checkpoint:</strong> Scenario questions with deep distractor breakdowns (why 3 wrong answers fail).</li>
-          <li><span class="step-pill">3</span><strong>Memory Lock:</strong> Spaced-repetition active recall flashcards.</li>
-          <li><span class="step-pill">4</span><strong>Weakness Pitstop:</strong> Closed loop automatically injects remedial missions for weak subtopics.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h2 class="card-title amber">3. Offline PWA & Smart Sprint</h2>
-        <ul class="bullet-list">
-          <li><strong>Zero-Data Service Worker:</strong> Runs 100% locally via <code>sw.js</code>. Works during power blackouts or airplane mode.</li>
-          <li><strong>Background Revision Alarm:</strong> Fires offline browser study reminders without internet.</li>
-          <li><strong>Adaptive Sprint Planner:</strong> Calculates required daily minutes to hit test date.</li>
-          <li><strong>Zero Login Friction:</strong> Progress & mastery state stored securely in localStorage.</li>
+          <li><strong>High Availability & Redundancy:</strong> Explained through M-Pesa agent float rebalancing across adjacent Kenyan towns.</li>
+          <li><strong>IaaS vs PaaS vs SaaS:</strong> Compared to building a farm granary (IaaS) vs renting communal harvest space (PaaS).</li>
+          <li><strong>Azure VPN vs ExpressRoute:</strong> Bullion escort van on public road (VPN) vs dedicated private SGR rail line (ExpressRoute).</li>
+          <li><strong>Multilingual Dialects:</strong> Prompts fluently generate in English, Kiswahili/Sheng, Nigerian Pidgin, and French.</li>
         </ul>
       </div>
     </div>
   </div>
 
   <!-- SLIDE 3 -->
-  <div class="slide" id="slide-3" data-notes="Who did we build this for? For the 1 Million Devs across the African continent. For the university student in Nairobi studying on a smartphone, the junior dev in Lagos battling unpredictable internet, and the career transitioner in Kigali. By speaking their language—literally offering explanations in English, Swahili, and Pidgin—we bridge the gap between complex cloud architecture and daily African life.">
+  <div class="slide" id="slide-3" data-notes="In User Experience & Vibes (15%), we designed an interface that makes cloud prep addictive rather than exhausting. Learners travel a 4-level visual roadmap with confetti celebrations, sound synthesizer chimes, and instant VARK style switching. Equally important is inclusion: AfriCloud targets WCAG 2.1 AAA compliance with offline text-to-speech, dyslexia typography, and full keyboard navigation.">
     <div class="header-bar">
-      <div class="badge green">Target Users & Localized Pedagogy &bull; 15 Points</div>
-      <h1 class="title">Designed for the Reality of 1 Million African Developers</h1>
-      <p class="subtitle">Bridging High-Tech Cloud Concepts With Relatable Mental Models & Multilingual Context</p>
+      <div class="badge green">Official Rubric Criterion 3 &bull; 🎨 User Experience & Vibes (15%)</div>
+      <h1 class="title">Aesthetic, Engaging, and Universally Accessible</h1>
+      <p class="subtitle">Obsidian UI, Gamified Checkpoints, Instant Feedback, and WCAG 2.1 AAA Inclusion</p>
     </div>
-    <div class="grid-3" style="flex: unset; margin-bottom: 16px;">
+    <div class="grid-2">
       <div class="card">
-        <h2 class="card-title cyan">Amina (Student)</h2>
-        <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 8px;">📍 Nairobi, Kenya</p>
-        <ul class="bullet-list" style="font-size: 0.88rem;">
-          <li><strong>Challenge:</strong> Studying for first cloud badge on mobile phone; foreign banking metaphors felt abstract.</li>
-          <li><strong>The Hook:</strong> Understood High Availability via M-Pesa multi-agent float balancing and regional redundancy.</li>
-          <li><strong>Result:</strong> Passed diagnostic in 12 mins.</li>
+        <h2 class="card-title amber">✨ Vibe Coding & 'Wow' Moments</h2>
+        <ul class="bullet-list">
+          <li><strong>Visual Mastery Roadmap:</strong> 4-level interactive roadmap featuring glowing milestones, locked gates, and weakness flags.</li>
+          <li><strong>Dopamine Loops:</strong> Celebratory confetti bursts upon checkpoint completion, streak trackers, and dynamic SVG readiness gauges.</li>
+          <li><strong>1-Click VARK Switching:</strong> Instantly toggle between Visual Maps, African Stories, Hands-on CLI, and Quick Summaries.</li>
+          <li><strong>Modern Dark Aesthetic:</strong> Obsidian palette built with Tailwind CSS v4 and Plus Jakarta Sans typography.</li>
         </ul>
       </div>
       <div class="card">
-        <h2 class="card-title amber">Tunde (Junior Dev)</h2>
-        <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 8px;">📍 Lagos, Nigeria</p>
-        <ul class="bullet-list" style="font-size: 0.88rem;">
-          <li><strong>Challenge:</strong> Power load-shedding & expensive data bundles; simulators crash when offline.</li>
-          <li><strong>The Hook:</strong> Studies 100% offline via PWA caching; background alarms remind him when power returns.</li>
-          <li><strong>Result:</strong> Saved $15/mo on data.</li>
+        <h2 class="card-title green">♿ Target WCAG 2.1 AAA Inclusion</h2>
+        <ul class="bullet-list">
+          <li><strong>Web Speech Text-to-Speech:</strong> Full offline read-aloud for visually impaired learners and auditory commuters.</li>
+          <li><strong>Dyslexia-Friendly Typography:</strong> Specialized letter-spacing, line-height, and font-weight toggles eliminate visual crowding.</li>
+          <li><strong>AAA High Contrast Mode:</strong> 7:1+ contrast ratios for low-light studying and battery conservation.</li>
+          <li><strong>100% Keyboard Hotkeys:</strong> Complete desktop access without mouse: 1-4 for answers, Space to flip, N for next mission.</li>
         </ul>
-      </div>
-      <div class="card">
-        <h2 class="card-title green">Jean-Luc (Career Shift)</h2>
-        <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 8px;">📍 Kigali, Rwanda</p>
-        <ul class="bullet-list" style="font-size: 0.88rem;">
-          <li><strong>Challenge:</strong> Non-technical background; English is a 2nd language; text docs feel intimidating.</li>
-          <li><strong>The Hook:</strong> Learned IaaS vs PaaS through communal farming granaries in French & Kiswahili with TTS read-aloud.</li>
-          <li><strong>Result:</strong> Booked exam date with confidence.</li>
-        </ul>
-      </div>
-    </div>
-    <div class="card" style="padding: 14px 20px; flex-direction: row; align-items: center; justify-content: space-between; border-color: var(--amber);">
-      <div>
-        <span style="color: var(--amber); font-weight: 700; font-size: 0.95rem;">🌍 4 African Languages:</span>
-        <span style="color: var(--text); font-size: 0.9rem; margin-left: 8px;">English &bull; Kiswahili/Sheng &bull; Nigerian Pidgin &bull; French</span>
-      </div>
-      <div style="font-size: 0.85rem; color: var(--muted);">
-        Regions = African Trading Hubs | Availability Zones = Independent Power Grids
       </div>
     </div>
   </div>
 
   <!-- SLIDE 4 -->
-  <div class="slide" id="slide-4" data-notes="Inclusion is at the core of our architecture. AfriCloud targets WCAG 2.1 AAA accessibility. Sighted or visually impaired, neurodivergent or motor-impaired—every learner has full access via offline text-to-speech read-aloud and keyboard shortcuts. Furthermore, our cognitive tracking engine is completely modular: the same code that powers AZ-900 today can power AWS Cloud Practitioner, Google Cloud Leader, or advanced Azure certifications tomorrow.">
+  <div class="slide" id="slide-4" data-notes="Rapid Prototyping & Execution (15%) demonstrates how much can be achieved with modern vibe coding. In under 48 hours, we delivered a production React 19 app, deployed globally on Vercel, with an offline Progressive Web App Service Worker that lets students study seamlessly through power outages or low-data commutes.">
     <div class="header-bar">
-      <div class="badge">Universal Inclusion & Scale &bull; 20 Points</div>
-      <h1 class="title">No Learner Left Behind: WCAG 2.1 AAA & Infinite Scale</h1>
-      <p class="subtitle">Accessibility-First Engineering Meets Cost-Free Serverless Scalability</p>
+      <div class="badge">Official Rubric Criterion 4 &bull; ⚡ Rapid Prototyping & Execution (15%)</div>
+      <h1 class="title">High-Velocity Engineering: Idea to Production in 48h</h1>
+      <p class="subtitle">React 19, Vite 8, Tailwind CSS v4, Progressive Web App Architecture, and Live Vercel CI/CD</p>
     </div>
     <div class="grid-2">
       <div class="card">
-        <h2 class="card-title green">♿ Universal Accessibility (WCAG 2.1 AAA)</h2>
+        <h2 class="card-title cyan">⚡ Full-Stack Production Delivery</h2>
         <ul class="bullet-list">
-          <li><strong>Web Speech Text-to-Speech:</strong> Full offline audio read-aloud for visually impaired learners and auditory commuters.</li>
-          <li><strong>Dyslexia-Optimized Typography:</strong> Custom letter spacing, line height, and font weights reduce visual crowding.</li>
-          <li><strong>High-Contrast AAA Mode:</strong> 7:1+ contrast ratio for low-light studying and battery conservation.</li>
-          <li><strong>100% Keyboard Navigability:</strong> Single-hand physical hotkeys (1-4 for answers, Enter, Space to flip, N for next).</li>
-          <li><strong>Screen Reader Live Regions:</strong> Instant ARIA announcements for score calibration and state transitions.</li>
+          <li><strong>Complete App in 48 Hours:</strong> 12+ modular components, 3-domain question banks, flashcards, diagnostic engine, and service worker built from scratch.</li>
+          <li><strong>React 19 + Vite 8:</strong> Instant HMR and lightning-fast static builds (&lt;150ms client boot).</li>
+          <li><strong>Live Vercel Edge Deployment:</strong> Production URL running globally with automatic GitHub CI/CD integration.</li>
+          <li><strong>Zero Login Friction:</strong> Complete state persistence in localStorage (scores, streaks, flashcard masteries).</li>
         </ul>
       </div>
       <div class="card">
-        <h2 class="card-title cyan">🚀 Exponential Impact & Ecosystem Scale</h2>
+        <h2 class="card-title amber">📱 Progressive Web App & Offline Resilience</h2>
         <ul class="bullet-list">
-          <li><strong>$0.00 Cost per Student:</strong> 100% client-side execution and static edge delivery means zero recurring server costs scaling to 1M developers.</li>
-          <li><strong>Pluggable Certification Engine:</strong> Modular JSON syllabus structure. Ingest AWS Cloud Practitioner (CLF-C02), GCP Digital Leader, or AZ-104 with 0 UI changes.</li>
-          <li><strong>Enterprise Talent Pipeline:</strong> Directly feeds certified African talent into high-growth local tech hubs and global enterprises.</li>
-          <li><strong>Open Source Ecosystem:</strong> MIT License ensures university clubs, tech communities, and coding camps can adapt freely.</li>
+          <li><strong>100% Offline-First Caching:</strong> Custom Service Worker (<code>sw.js</code>) precaches all assets for zero-data studying.</li>
+          <li><strong>Load-Shedding & Blackout Proof:</strong> Engineered specifically for African infrastructure realities—never lose progress during power drops.</li>
+          <li><strong>Adaptive Sprint Planner:</strong> Dynamic calculator determines daily revision minutes to hit target exam date.</li>
+          <li><strong>Clean Repository Standards:</strong> Fully documented codebase, tests, and open source MIT license.</li>
         </ul>
       </div>
     </div>
   </div>
 
   <!-- SLIDE 5 -->
-  <div class="slide" id="slide-5" data-notes="We built AfriCloud AZ-900 in under 48 hours using the full power of modern vibe coding—Vite, Tailwind CSS, Service Workers, and Gemini AI. The code is open source, production-built, and running live. We invite all the judges and fellow 1M Devs learners to scan the QR code, take a 1-minute vibe quiz, and experience the future of adaptive certification prep. Let's vibe code for learning!">
+  <div class="slide" id="slide-5" data-notes="Finally, Technical Creativity (15%): we used browser APIs in clever ways—zero-dependency Web Audio synthesizers for instant sound feedback, background Service Worker notification alarms that fire even with closed tabs, and a mathematical readiness radar. The project is open source and running live. Scan the QR code or visit az900-vibe-agent.vercel.app to experience AfriCloud right now!">
     <div class="header-bar">
-      <div class="badge green">Clarity, Delivery & Production Readiness &bull; 20 Points</div>
-      <h1 class="title">Vibe Coding in Action: Production-Ready Today</h1>
-      <p class="subtitle">Built in 48 Hours &bull; Deployed Globally &bull; 100% Open Source Community Study Tool</p>
+      <div class="badge green">Official Rubric Criterion 5 &bull; 🧠 Technical Creativity (15%)</div>
+      <h1 class="title">Clever Engineering, Zero Dependencies & Live Verification</h1>
+      <p class="subtitle">Background Service Worker Alarms, Web Audio Synthesizer, and Live Demonstration</p>
     </div>
     <div class="grid-2">
       <div class="card">
-        <h2 class="card-title cyan">⚡ The Production Tech Stack</h2>
-        <ul class="bullet-list" style="margin-bottom: 20px;">
-          <li><strong>Frontend:</strong> React 19 + Vite 8 + Tailwind CSS v4 (Lightweight, instant HMR, responsive).</li>
-          <li><strong>Offline Engine:</strong> Custom Service Worker (<code>sw.js</code>) for offline assets & background alarms.</li>
-          <li><strong>Adaptive AI:</strong> Google Gemini API for personalized weak-area diagnosis and colloquial translation.</li>
-          <li><strong>Native Audio:</strong> Web Speech API & Web Audio API (0kb external audio payloads).</li>
+        <h2 class="card-title cyan">💡 Unique Tool Use & Clever Architecture</h2>
+        <ul class="bullet-list" style="margin-bottom: 16px;">
+          <li><strong>Background Service Worker Alarms:</strong> Schedules local study alerts that fire even if the browser tab is closed or offline.</li>
+          <li><strong>Zero-Dependency Web Audio Synth:</strong> Generates harmonic chimes using raw browser oscillators (<code>AudioContext</code>) with 0kb audio downloads.</li>
+          <li><strong>Closed-Loop Weakness Detection:</strong> Automatically flags subtopics &lt;70% and dynamically injects remediation pitstops into the roadmap.</li>
         </ul>
-        <h2 class="card-title amber" style="margin-top: 8px;">🔗 Official Repositories & Links</h2>
+        <h2 class="card-title amber" style="margin-top: 4px;">🔗 Live Verification Links</h2>
         <ul class="bullet-list" style="font-size: 0.9rem;">
           <li><strong>Live App:</strong> <a href="https://az900-vibe-agent.vercel.app/" target="_blank" style="color: var(--cyan); text-decoration: underline;">https://az900-vibe-agent.vercel.app/</a></li>
-          <li><strong>GitHub Repo:</strong> <a href="https://github.com/ondinookello96/az900-vibe-agent" target="_blank" style="color: var(--cyan); text-decoration: underline;">ondinookello96/az900-vibe-agent</a></li>
-          <li><strong>Hackathon Track:</strong> 📊 Progress: Readiness Tracker (#1MillionDevs Movement)</li>
+          <li><strong>GitHub:</strong> <a href="https://github.com/ondinookello96/az900-vibe-agent" target="_blank" style="color: var(--cyan); text-decoration: underline;">ondinookello96/az900-vibe-agent</a></li>
         </ul>
       </div>
       <div class="card qr-container">
-        <h2 class="card-title green" style="margin-bottom: 4px;">📱 Scan to Test Live PWA</h2>
-        <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 12px;">Works offline &bull; Instant Mobile Launch</p>
+        <h2 class="card-title green" style="margin-bottom: 4px;">📱 Scan & Test Live PWA</h2>
+        <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 12px;">Instant Mobile Launch &bull; Works Offline</p>
         <div class="qr-box">
           <img src="az900_qr.png" alt="Scan to Launch AfriCloud AZ-900 Live Demo">
         </div>
@@ -541,7 +475,6 @@
     }
   });
 
-  // Init notes
   showSlide(1);
 </script>
 

@@ -102,15 +102,17 @@ The optimized static bundle is generated in `dist/` and can be deployed instantl
 
 ---
 
-## 🎤 Hackathon Pitch & Presentation Guide (5-Slide Structure)
+## 🏆 Official Hackathon Judging Criteria Alignment (100% Total)
 
-| Slide | Criterion (100% Total) | Pitch Talking Points |
-| :---: | :--- | :--- |
-| **1. Hook & Problem** | **Problem Understanding (20%)** | *"Every day, thousands of African devs study for AZ-900, but abstract foreign jargon and dry dumps cause exam failure and voucher waste. We built the adaptive tool we wished we had."* |
-| **2. Product Demo** | **Solution & Product (25%)** | Live demo: Show the circular readiness meter, answer a practice question to reveal the "Why It's Wrong" breakdown, toggle to Auditory/African analogy mode, and trigger a study reminder. |
-| **3. Community Fit** | **Target Users (15%)** | Built specifically for the #1MillionDevs Movement: career transitioners, university students, and junior developers across Kenya, Nigeria, South Africa, Rwanda, Ghana, and beyond. |
-| **4. Growth & Scale** | **Impact & Scalability (20%)** | The adaptive cognitive engine is modular: easily expand to AWS Cloud Practitioner, Google Cloud Associate Cloud Engineer, and advanced Azure exams (AZ-104 / AZ-204). Offline support ensures accessibility in low-bandwidth zones. |
-| **5. The Vibe** | **Clarity & Delivery (20%)** | Summarize the team's vibe coding journey: rapid execution in under 48 hours using Vite, Tailwind, and Gemini. Invite the judges to try a 1-minute vibe quiz. |
+> 📊 **Pitch Deck:** [Download PowerPoint (.pptx)](AfriCloud_AZ900_Pitch_Deck.pptx) | 🖥️ **Web Presenter:** [Launch Interactive Slides](https://az900-vibe-agent.vercel.app/presentation.html)
+
+| Official Judging Criterion | Weight | How AfriCloud Delivers Full Marks |
+| :--- | :---: | :--- |
+| **📚 Learning Value**<br>*(Does the tool genuinely help someone prepare for AZ-900? Is content accurate?)* | **25%** | • **Strict Microsoft Learn Alignment:** Covers all 3 official domains (Concepts 27.5%, Architecture 37.5%, Governance 35%).<br>• **Domain-Weighted Readiness Formula:** Real-time passing probability modeled against the 700/1000 threshold rather than raw quiz averages.<br>• **Deep Distractor Analysis ("Why It's Wrong"):** Every question breaks down why the other 3 options fail.<br>• **Spaced Repetition:** Flashcard memory lock system with active recall tracking. |
+| **🔍 Prompt Engineering**<br>*(Are AI prompts accurate, effective and purposeful?)* | **20%** | • **Multi-Tier Role Guardrails:** Custom "Rafiki" mentor system prompt in `geminiService.js` strictly bounded by the official syllabus.<br>• **Context-Injected Dynamic Prompts:** Prompts dynamically inject the user's VARK learning style, topic weakness, and African dialect (English, Swahili/Sheng, Nigerian Pidgin, French).<br>• **Grounded Pedagogical Metaphors:** Instructs Gemini to translate abstract concepts into relatable mental models (M-Pesa float for High Availability, communal granaries for Storage/CapEx).<br>• **Deterministic Offline Fallbacks:** Structured fallback knowledge tree matching exact prompt response schemas when offline. |
+| **🎨 User Experience & Vibes**<br>*(Clean, easy interface with "wow" moments keeping learners engaged)* | **15%** | • **Obsidian Modern UI:** Built with Tailwind CSS v4 featuring responsive dark mode and glowing progress paths.<br>• **"Wow" Moments:** Confetti explosions upon passing checkpoints, dynamic circular SVG readiness meters, and sound synthesizer chimes.<br>• **VARK Customization:** Switch between Architecture Diagrams, African Stories, Hands-on CLI, and Quick Summaries in 1 click.<br>• **WCAG 2.1 AAA Accessibility:** Dyslexia-friendly spacing, 7:1+ high contrast mode, and single-hand keyboard hotkeys (`1-4`, `Space`, `Enter`, `N`). |
+| **⚡ Rapid Prototyping & Execution**<br>*(How much was built in time? Smart tool use and adaptability)* | **15%** | • **Full Stack in Under 48 Hours:** React 19 + Vite 8 + Tailwind CSS v4, production-optimized and deployed live on Vercel.<br>• **Progressive Web App (PWA):** Custom `sw.js` caching enabling 100% offline study during commutes or load-shedding.<br>• **Zero-Friction State:** LocalStorage persistence keeps progress, scores, and streak data with zero sign-up friction.<br>• **Clean Automated CI/CD:** Continuous deployment pipeline connected directly to GitHub. |
+| **🧠 Technical Creativity**<br>*(Unique tool use, clever features and clean code)* | **15%** | • **Offline Background Service Worker Alarms:** Scheduled study reminders trigger via browser notifications even when offline or tab is closed.<br>• **Zero-Dependency Web Audio Synth:** Generates harmonic success/error chimes using raw browser oscillators (`AudioContext`) with 0kb external audio file payload.<br>• **Offline Speech Synthesis:** Uses browser Web Speech API for offline text-to-speech without expensive cloud TTS APIs.<br>• **Mathematical Diagnostic Radar:** Closed-loop engine that automatically flags subtopics below 70% and injects targeted Weakness Pitstops. |
 
 ---
 
