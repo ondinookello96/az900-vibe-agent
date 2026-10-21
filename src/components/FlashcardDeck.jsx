@@ -13,7 +13,7 @@ import {
 import { FLASHCARDS } from '../data/flashcards';
 import { NotificationService } from '../services/notificationService';
 
-export const FlashcardDeck = ({ profile }) => {
+export const FlashcardDeck = ({ profile, onRecordMastery }) => {
   const [cards, setCards] = useState(FLASHCARDS);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -49,6 +49,11 @@ export const FlashcardDeck = ({ profile }) => {
       ...prev,
       [currentCard.id]: status
     }));
+
+    // Feed active recall signal directly into the cognitive tracking engine!
+    if (onRecordMastery && currentCard.subtopic) {
+      onRecordMastery(currentCard.subtopic, status === 'mastered');
+    }
 
     if (status === 'mastered') {
       NotificationService.playChime('success');

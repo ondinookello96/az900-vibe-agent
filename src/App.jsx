@@ -81,6 +81,11 @@ export function App() {
     setActiveTab('quiz');
   };
 
+  const handleCalibrateDomain = (domainId, baseScore) => {
+    const updated = StorageService.setDomainBaseline(domainId, baseScore);
+    setMasteryState({ ...updated });
+  };
+
   const handleClearNotifications = () => {
     StorageService.saveNotifications([]);
     setNotifications([]);
@@ -140,6 +145,7 @@ export function App() {
             masteryState={masteryState}
             onStartQuiz={handleStartQuiz}
             onSelectWeakTopic={handleSelectWeakTopic}
+            onCalibrateDomain={handleCalibrateDomain}
           />
         )}
 
@@ -165,6 +171,7 @@ export function App() {
         {activeTab === 'flashcards' && (
           <FlashcardDeck
             profile={profile}
+            onRecordMastery={handleRecordAnswer}
           />
         )}
 

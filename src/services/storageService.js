@@ -72,6 +72,27 @@ export const StorageService = {
     localStorage.setItem(STORAGE_KEYS.MASTERY_STATE, JSON.stringify(state));
   },
 
+  setDomainBaseline(domainId, baseScore) {
+    const state = this.getMasteryState();
+    AZ900_DOMAINS.forEach(d => {
+      if (d.id === domainId) {
+        d.subtopics.forEach(sub => {
+          state[sub.id] = {
+            subtopicId: sub.id,
+            domainId: d.id,
+            name: sub.name,
+            correct: Math.round((baseScore / 100) * 10),
+            total: 10,
+            score: baseScore,
+            lastAnswered: new Date().toISOString()
+          };
+        });
+      }
+    });
+    this.saveMasteryState(state);
+    return state;
+  },
+
   recordAnswer(subtopicId, isCorrect) {
     const state = this.getMasteryState();
     const curr = state[subtopicId] || {
