@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AfriCloud AZ-900 Prep | Pitch Deck Presentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #070b14;
+      --card-bg: #111a2e;
+      --card-border: #1e2c4a;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --cyan: #38bdf8;
+      --amber: #f59e0b;
+      --green: #10b981;
+      --red: #f87171;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .deck-container {
+      width: 100vw;
+      height: 100vh;
+      max-width: 1400px;
+      max-height: 787px; /* 16:9 ratio */
+      display: flex;
+      flex-direction: column;
+      padding: 36px 48px 24px;
+      position: relative;
+    }
+    .slide {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .slide.active {
+      display: flex;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .header-bar {
+      margin-bottom: 24px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 14px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--cyan);
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .badge.amber {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: var(--amber);
+    }
+    .badge.green {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: var(--green);
+    }
+    .title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: #ffffff;
+      background: linear-gradient(135deg, #ffffff 60%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--amber);
+      font-style: italic;
+      margin-top: 6px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      flex: 1;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      flex: 1;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      opacity: 0.5;
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title.cyan { color: var(--cyan); }
+    .card-title.amber { color: var(--amber); }
+    .card-title.green { color: var(--green); }
+    .card-title.red { color: var(--red); }
+    .bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .bullet-list li {
+      position: relative;
+      padding-left: 20px;
+      color: var(--muted);
+    }
+    .bullet-list li::before {
+      content: '•';
+      position: absolute;
+      left: 4px;
+      color: var(--cyan);
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    .bullet-list li strong {
+      color: var(--text);
+    }
+    .formula-box {
+      background: #090e1a;
+      border: 1px dashed var(--amber);
+      border-radius: 10px;
+      padding: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--amber);
+      margin: 10px 0 14px;
+      line-height: 1.4;
+    }
+    .qr-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 12px;
+    }
+    .qr-box {
+      background: white;
+      padding: 12px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .qr-box img {
+      width: 170px;
+      height: 170px;
+      display: block;
+    }
+    .speaker-notes-drawer {
+      position: fixed;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 1000px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid var(--amber);
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-size: 0.92rem;
+      color: #e2e8f0;
+      line-height: 1.5;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+      display: none;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    .speaker-notes-drawer.open {
+      display: block;
+    }
+    .controls-bar {
+      position: absolute;
+      bottom: 12px;
+      left: 48px;
+      right: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+    .nav-btns {
+      display: flex;
+      gap: 8px;
+    }
+    .btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .btn:hover {
+      background: #1c2b4c;
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+    .btn.active {
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+    .step-pill {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--amber);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      margin-right: 4px;
+    }
+    @media print {
+      body {
+        overflow: visible;
+        background: white;
+        color: black;
+      }
+      .controls-bar, .speaker-notes-drawer {
+        display: none !important;
+      }
+      .slide {
+        display: flex !important;
+        page-break-after: always;
+        height: 100vh;
+        max-height: none;
+      }
+      .deck-container {
+        max-height: none;
+        max-width: none;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="deck-container">
+  <!-- SLIDE 1 -->
+  <div class="slide active" id="slide-1" data-notes="Hello judges! Like many of you in the #1MillionDevs movement, I prepared for AZ-900 and experienced the anxiety of studying blind. You spend weeks memorizing answers, but you still ask yourself: 'Am I actually ready to risk $99 on the real exam?' Traditional prep tools give you a raw test percentage with zero cognitive diagnosis. We built the tool we wished we had when we started our cloud journey.">
+    <div class="header-bar">
+      <div class="badge">Vibe Coding Hackathon 2026 &bull; Track: 📊 Readiness Tracker</div>
+      <h1 class="title">AfriCloud AZ-900: Cognitive Readiness & Adaptive Coach</h1>
+      <p class="subtitle">Turning Abstract Cloud Jargon into Confident Exam Readiness for Africa's Next 1 Million Developers</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h2 class="card-title red">⚠️ The Barrier: Studying Blind</h2>
+        <ul class="bullet-list">
+          <li><strong>High-Stakes Financial Anxiety:</strong> $99 certification vouchers expiring in 14 days; learners memorize brain dumps without knowing if they will actually pass.</li>
+          <li><strong>The 700/1000 Threshold:</strong> AZ-900 requires 70% weighted mastery across 3 distinct domains, not just a flat quiz score.</li>
+          <li><strong>Disconnected Mental Models:</strong> Abstract US/EU enterprise banking metaphors fail to anchor in the daily realities of African students.</li>
+          <li><strong>The Blind Spot Trap:</strong> Students spend 80% of revision time on concepts they already know, neglecting silent weak points.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2 class="card-title cyan">💡 The 3 Critical Learning Blindspots</h2>
+        <ul class="bullet-list">
+          <li><strong>1. Jargon Overload:</strong> Terms like <em>Availability Zones</em>, <em>IaaS vs PaaS</em>, and <em>Blob Archive Rehydration</em> feel alien without local context.</li>
+          <li><strong>2. The 'Why Is This Wrong?' Gap:</strong> Standard mock exams show option A is correct, but leave learners guessing why B, C, and D are traps. Real exam questions test edge cases.</li>
+          <li><strong>3. The Static Percentage Illusion:</strong> Getting 8/10 on random questions does not predict passing. Without syllabus domain weighting, test-takers walk in unprepared.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 -->
+  <div class="slide" id="slide-2" data-notes="Meet AfriCloud AZ-900. Instead of a static quiz app, it's an intelligent learning companion. As you see on screen, our Readiness Gauge models your probability of passing based on Microsoft's exact domain weighting. When a weakness is detected—like Azure Networking dropping below 70%—our closed-loop engine doesn't just show a red bar: it automatically schedules an offline study alert, flags a Weakness Pitstop on your roadmap, and provides targeted revision in your personal learning style.">
+    <div class="header-bar">
+      <div class="badge amber">Solution Architecture & Product Demo &bull; 25 Points</div>
+      <h1 class="title">The Cognitive Readiness Engine & Progressive Mastery Loop</h1>
+      <p class="subtitle">Real-Time Weighted Exam Modeling With Automated Weak Area Pitstops</p>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <h2 class="card-title cyan">1. Multi-Signal Readiness</h2>
+        <div class="formula-box">
+          R_exam = 0.275 · Concepts<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ 0.375 · Architecture<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ 0.350 · Governance
+        </div>
+        <ul class="bullet-list">
+          <li><strong>Dynamic Passing Probability:</strong> Calibrates test readiness against the 700/1000 passing mark.</li>
+          <li><strong>Weakness Radar (&lt;70%):</strong> Instantly highlights failing subtopics (e.g. Azure Networking at 0%).</li>
+          <li><strong>30s Baseline Diagnostic:</strong> Tailors initial mission path upon onboarding.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2 class="card-title green">2. Progressive Master Loop</h2>
+        <ul class="bullet-list">
+          <li><span class="step-pill">1</span><strong>Explore & Learn:</strong> Personalized by VARK style (Visual map, African analogy, or CLI).</li>
+          <li><span class="step-pill">2</span><strong>Practice Checkpoint:</strong> Scenario questions with deep distractor breakdowns (why 3 wrong answers fail).</li>
+          <li><span class="step-pill">3</span><strong>Memory Lock:</strong> Spaced-repetition active recall flashcards.</li>
+          <li><span class="step-pill">4</span><strong>Weakness Pitstop:</strong> Closed loop automatically injects remedial missions for weak subtopics.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2 class="card-title amber">3. Offline PWA & Smart Sprint</h2>
+        <ul class="bullet-list">
+          <li><strong>Zero-Data Service Worker:</strong> Runs 100% locally via <code>sw.js</code>. Works during power blackouts or airplane mode.</li>
+          <li><strong>Background Revision Alarm:</strong> Fires offline browser study reminders without internet.</li>
+          <li><strong>Adaptive Sprint Planner:</strong> Calculates required daily minutes to hit test date.</li>
+          <li><strong>Zero Login Friction:</strong> Progress & mastery state stored securely in localStorage.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3 -->
+  <div class="slide" id="slide-3" data-notes="Who did we build this for? For the 1 Million Devs across the African continent. For the university student in Nairobi studying on a smartphone, the junior dev in Lagos battling unpredictable internet, and the career transitioner in Kigali. By speaking their language—literally offering explanations in English, Swahili, and Pidgin—we bridge the gap between complex cloud architecture and daily African life.">
+    <div class="header-bar">
+      <div class="badge green">Target Users & Localized Pedagogy &bull; 15 Points</div>
+      <h1 class="title">Designed for the Reality of 1 Million African Developers</h1>
+      <p class="subtitle">Bridging High-Tech Cloud Concepts With Relatable Mental Models & Multilingual Context</p>
+    </div>
+    <div class="grid-3" style="flex: unset; margin-bottom: 16px;">
+      <div class="card">
+        <h2 class="card-title cyan">Amina (Student)</h2>
+        <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 8px;">📍 Nairobi, Kenya</p>
+        <ul class="bullet-list" style="font-size: 0.88rem;">
+          <li><strong>Challenge:</strong> Studying for first cloud badge on mobile phone; foreign banking metaphors felt abstract.</li>
+          <li><strong>The Hook:</strong> Understood High Availability via M-Pesa multi-agent float balancing and regional redundancy.</li>
+          <li><strong>Result:</strong> Passed diagnostic in 12 mins.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2 class="card-title amber">Tunde (Junior Dev)</h2>
+        <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 8px;">📍 Lagos, Nigeria</p>
+        <ul class="bullet-list" style="font-size: 0.88rem;">
+          <li><strong>Challenge:</strong> Power load-shedding & expensive data bundles; simulators crash when offline.</li>
+          <li><strong>The Hook:</strong> Studies 100% offline via PWA caching; background alarms remind him when power returns.</li>
+          <li><strong>Result:</strong> Saved $15/mo on data.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2 class="card-title green">Jean-Luc (Career Shift)</h2>
+        <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 8px;">📍 Kigali, Rwanda</p>
+        <ul class="bullet-list" style="font-size: 0.88rem;">
+          <li><strong>Challenge:</strong> Non-technical background; English is a 2nd language; text docs feel intimidating.</li>
+          <li><strong>The Hook:</strong> Learned IaaS vs PaaS through communal farming granaries in French & Kiswahili with TTS read-aloud.</li>
+          <li><strong>Result:</strong> Booked exam date with confidence.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="padding: 14px 20px; flex-direction: row; align-items: center; justify-content: space-between; border-color: var(--amber);">
+      <div>
+        <span style="color: var(--amber); font-weight: 700; font-size: 0.95rem;">🌍 4 African Languages:</span>
+        <span style="color: var(--text); font-size: 0.9rem; margin-left: 8px;">English &bull; Kiswahili/Sheng &bull; Nigerian Pidgin &bull; French</span>
+      </div>
+      <div style="font-size: 0.85rem; color: var(--muted);">
+        Regions = African Trading Hubs | Availability Zones = Independent Power Grids
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4 -->
+  <div class="slide" id="slide-4" data-notes="Inclusion is at the core of our architecture. AfriCloud targets WCAG 2.1 AAA accessibility. Sighted or visually impaired, neurodivergent or motor-impaired—every learner has full access via offline text-to-speech read-aloud and keyboard shortcuts. Furthermore, our cognitive tracking engine is completely modular: the same code that powers AZ-900 today can power AWS Cloud Practitioner, Google Cloud Leader, or advanced Azure certifications tomorrow.">
+    <div class="header-bar">
+      <div class="badge">Universal Inclusion & Scale &bull; 20 Points</div>
+      <h1 class="title">No Learner Left Behind: WCAG 2.1 AAA & Infinite Scale</h1>
+      <p class="subtitle">Accessibility-First Engineering Meets Cost-Free Serverless Scalability</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h2 class="card-title green">♿ Universal Accessibility (WCAG 2.1 AAA)</h2>
+        <ul class="bullet-list">
+          <li><strong>Web Speech Text-to-Speech:</strong> Full offline audio read-aloud for visually impaired learners and auditory commuters.</li>
+          <li><strong>Dyslexia-Optimized Typography:</strong> Custom letter spacing, line height, and font weights reduce visual crowding.</li>
+          <li><strong>High-Contrast AAA Mode:</strong> 7:1+ contrast ratio for low-light studying and battery conservation.</li>
+          <li><strong>100% Keyboard Navigability:</strong> Single-hand physical hotkeys (1-4 for answers, Enter, Space to flip, N for next).</li>
+          <li><strong>Screen Reader Live Regions:</strong> Instant ARIA announcements for score calibration and state transitions.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2 class="card-title cyan">🚀 Exponential Impact & Ecosystem Scale</h2>
+        <ul class="bullet-list">
+          <li><strong>$0.00 Cost per Student:</strong> 100% client-side execution and static edge delivery means zero recurring server costs scaling to 1M developers.</li>
+          <li><strong>Pluggable Certification Engine:</strong> Modular JSON syllabus structure. Ingest AWS Cloud Practitioner (CLF-C02), GCP Digital Leader, or AZ-104 with 0 UI changes.</li>
+          <li><strong>Enterprise Talent Pipeline:</strong> Directly feeds certified African talent into high-growth local tech hubs and global enterprises.</li>
+          <li><strong>Open Source Ecosystem:</strong> MIT License ensures university clubs, tech communities, and coding camps can adapt freely.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5 -->
+  <div class="slide" id="slide-5" data-notes="We built AfriCloud AZ-900 in under 48 hours using the full power of modern vibe coding—Vite, Tailwind CSS, Service Workers, and Gemini AI. The code is open source, production-built, and running live. We invite all the judges and fellow 1M Devs learners to scan the QR code, take a 1-minute vibe quiz, and experience the future of adaptive certification prep. Let's vibe code for learning!">
+    <div class="header-bar">
+      <div class="badge green">Clarity, Delivery & Production Readiness &bull; 20 Points</div>
+      <h1 class="title">Vibe Coding in Action: Production-Ready Today</h1>
+      <p class="subtitle">Built in 48 Hours &bull; Deployed Globally &bull; 100% Open Source Community Study Tool</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h2 class="card-title cyan">⚡ The Production Tech Stack</h2>
+        <ul class="bullet-list" style="margin-bottom: 20px;">
+          <li><strong>Frontend:</strong> React 19 + Vite 8 + Tailwind CSS v4 (Lightweight, instant HMR, responsive).</li>
+          <li><strong>Offline Engine:</strong> Custom Service Worker (<code>sw.js</code>) for offline assets & background alarms.</li>
+          <li><strong>Adaptive AI:</strong> Google Gemini API for personalized weak-area diagnosis and colloquial translation.</li>
+          <li><strong>Native Audio:</strong> Web Speech API & Web Audio API (0kb external audio payloads).</li>
+        </ul>
+        <h2 class="card-title amber" style="margin-top: 8px;">🔗 Official Repositories & Links</h2>
+        <ul class="bullet-list" style="font-size: 0.9rem;">
+          <li><strong>Live App:</strong> <a href="https://az900-vibe-agent.vercel.app/" target="_blank" style="color: var(--cyan); text-decoration: underline;">https://az900-vibe-agent.vercel.app/</a></li>
+          <li><strong>GitHub Repo:</strong> <a href="https://github.com/ondinookello96/az900-vibe-agent" target="_blank" style="color: var(--cyan); text-decoration: underline;">ondinookello96/az900-vibe-agent</a></li>
+          <li><strong>Hackathon Track:</strong> 📊 Progress: Readiness Tracker (#1MillionDevs Movement)</li>
+        </ul>
+      </div>
+      <div class="card qr-container">
+        <h2 class="card-title green" style="margin-bottom: 4px;">📱 Scan to Test Live PWA</h2>
+        <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 12px;">Works offline &bull; Instant Mobile Launch</p>
+        <div class="qr-box">
+          <img src="az900_qr.png" alt="Scan to Launch AfriCloud AZ-900 Live Demo">
+        </div>
+        <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; color: var(--cyan); font-weight: 700; margin-top: 8px;">az900-vibe-agent.vercel.app</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTROLS & NOTES BAR -->
+  <div class="controls-bar">
+    <div>Slide <span id="current-slide-num">1</span> of 5 &bull; Use Arrow Keys &bull; Press <strong>N</strong> for Speaker Notes &bull; Press <strong>F</strong> for Fullscreen</div>
+    <div class="nav-btns">
+      <button class="btn" id="prev-btn" onclick="prevSlide()">← Prev</button>
+      <button class="btn" id="next-btn" onclick="nextSlide()">Next →</button>
+      <button class="btn" id="notes-btn" onclick="toggleNotes()">🎙️ Notes (N)</button>
+    </div>
+  </div>
+
+  <!-- SPEAKER NOTES DRAWER -->
+  <div class="speaker-notes-drawer" id="speaker-notes">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+      <span style="font-weight: 700; color: var(--amber); font-size: 0.85rem;">🎙️ PRESENTER SCRIPT (30-45 SECONDS)</span>
+      <span style="font-size: 0.75rem; color: var(--muted); cursor: pointer;" onclick="toggleNotes()">[Close]</span>
+    </div>
+    <p id="notes-content"></p>
+  </div>
+</div>
+
+<script>
+  let currentSlide = 1;
+  const totalSlides = 5;
+
+  function showSlide(index) {
+    if (index < 1) index = 1;
+    if (index > totalSlides) index = totalSlides;
+    currentSlide = index;
+
+    document.querySelectorAll('.slide').forEach((el, i) => {
+      el.classList.toggle('active', i + 1 === currentSlide);
+    });
+
+    document.getElementById('current-slide-num').textContent = currentSlide;
+    const activeSlide = document.getElementById(`slide-${currentSlide}`);
+    document.getElementById('notes-content').textContent = activeSlide.getAttribute('data-notes') || '';
+  }
+
+  function nextSlide() {
+    if (currentSlide < totalSlides) showSlide(currentSlide + 1);
+  }
+
+  function prevSlide() {
+    if (currentSlide > 1) showSlide(currentSlide - 1);
+  }
+
+  function toggleNotes() {
+    const drawer = document.getElementById('speaker-notes');
+    drawer.classList.toggle('open');
+    document.getElementById('notes-btn').classList.toggle('active');
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+      nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      prevSlide();
+    } else if (e.key.toLowerCase() === 'n') {
+      toggleNotes();
+    } else if (e.key.toLowerCase() === 'f') {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+  });
+
+  // Init notes
+  showSlide(1);
+</script>
+
+</body>
+</html>
