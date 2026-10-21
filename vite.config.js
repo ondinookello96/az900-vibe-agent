@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: process.env.GITHUB_PAGES ? '/az900-vibe-agent/' : '/',
+  base: '/',
   plugins: [
     react(),
     tailwindcss(),
