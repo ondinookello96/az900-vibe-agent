@@ -1,23 +1,20 @@
-# 🎧 AfriCloud AZ-900: Adaptive Exam Prep Agent
-> **"Building Smarter Exam Prep Tools from Our Own Learning Journey"**  
-> *Built for the #1MillionDevs Movement Vibe Coding Hackathon (October 2026)*
+# 🎧 AfriCloud AZ-900: Cognitive Readiness & Learning Journey Tracker
+> **Hackathon Track:** 📊 **Progress: Readiness Tracker**  
+> **Theme:** *"Building Smarter Exam Prep Tools from Our Own Learning Journey"*  
+> **Initiative:** #1MillionDevs Movement Vibe Coding Hackathon (October 2026)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Hackathon Track](https://img.shields.io/badge/Track-Progress%3A%20Readiness%20Tracker-purple.svg)](#)
 [![AZ-900](https://img.shields.io/badge/Certification-AZ--900%20Azure%20Fundamentals-0078D4.svg)](https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/)
 [![Community](https://img.shields.io/badge/Community-%231MillionDevs-amber.svg)](https://1milliondevs.org)
 [![Status](https://img.shields.io/badge/Status-Unofficial%20Community%20Tool-emerald.svg)](#)
 
 ---
 
-## 💡 The Pain Point & Learning Journey
+## 🎯 The Challenge: "Progress: Readiness Tracker"
 
-When studying for Microsoft Azure Fundamentals (AZ-900), learners from across Africa and around the world face four recurring bottlenecks:
-1. **Abstract Jargon Overload:** Concepts like *Availability Zones*, *IaaS vs PaaS*, and *Blob Archive Rehydration* feel disconnected from daily life.
-2. **"Why is this wrong?" Blindspot:** Traditional practice tests say *"Option B is correct"*, but leave learners guessing *why* options A, C, and D are invalid distractors.
-3. **One-Size-Fits-All Teaching:** Visual learners need topology diagrams, conversational learners need relatable analogies, kinesthetic learners need terminal commands, and reading learners need high-yield bullet summaries.
-4. **Exam Anxiety & Procrastination:** Learners don't know whether they are truly ready for the test, and struggle to pace their study sessions before their exam date.
-
-**AfriCloud AZ-900** is an AI-assisted, vibe-coded exam companion built by learners who experienced these exact struggles.
+* **The Problem:** Many learners study aimlessly and often don't know if they are truly ready to sit the AZ-900 exam, leading to wasted \$99 exam vouchers or crippling test anxiety. Traditional tools only give a blunt, unweighted test score without diagnosing root causes.
+* **Our Solution:** **AfriCloud AZ-900** is an **Agentic Cognitive Readiness Tracker**. It models the learner's knowledge state using multi-signal tracking (baseline self-assessment, active recall, practice quizzes), applies official Microsoft syllabus weights (27.5% / 37.5% / 35%), and provides a closed-loop prescriptive dashboard that tells the learner **exactly what their weak areas are, why they are weak, and how to revise them using their personal learning style (VARK)**.
 
 ---
 
