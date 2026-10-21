@@ -66,6 +66,7 @@ export const REVISION_CONTENT_BY_TOPIC = {
     kinesthetic: {
       labTitle: 'Interactive Shared Responsibility Test',
       actionPrompt: 'Sort responsibility: Who updates the Operating System patch in Azure Virtual Machines vs Azure App Service?',
+      cliCommand: 'az vm auto-upgrade enable --resource-group MyRG --name MyVM',
       stepGuide: [
         '1. In Azure VMs (IaaS), you as the admin must trigger OS updates.',
         '2. In Azure App Service (PaaS), Microsoft handles OS patches automatically without downtime.',
@@ -79,6 +80,87 @@ export const REVISION_CONTENT_BY_TOPIC = {
         '• Elasticity: Dynamic automatic scaling up and DOWN based on real-time traffic spikes.',
         '• High Availability: System remains accessible with minimal downtime (99.9% - 99.99% SLA).',
         '• Disaster Recovery: Ability to restore functionality after catastrophic region failure (Geo-redundancy).'
+      ]
+    }
+  },
+
+  'service-models': {
+    title: 'Cloud Service Models: IaaS vs PaaS vs SaaS',
+    visual: {
+      diagramType: 'Control vs Convenience Spectrum',
+      summary: 'IaaS (Maximum Control) -> PaaS (Balanced Productivity) -> SaaS (Zero Maintenance)',
+      elements: [
+        { label: 'IaaS', scope: 'Virtual Machines, Virtual Networks, Disks', customer: 'OS, Middleware, Code, Data' },
+        { label: 'PaaS', scope: 'Azure App Service, Azure SQL, Azure Functions', customer: 'Code and Data only' },
+        { label: 'SaaS', scope: 'Microsoft 365, Dynamics 365', customer: 'User access and Data input' }
+      ],
+      tip: 'The higher you go (IaaS -> SaaS), the more Microsoft manages for you, reducing your operational burden.'
+    },
+    auditory: {
+      analogyTitle: 'Building a Farm Granary vs Renting Grain Space',
+      story: `• IaaS: You lease empty agricultural land. You build your own wooden grain silo, buy padlocks, and hire a watchman. You have total freedom over dimensions, but all repairs fall on you.
+• PaaS: You deliver your harvest to a cooperative grain silo. They provide temperature control, security, and electricity. You only focus on weighing and selling your maize.
+• SaaS: You buy pre-packaged, milled maize flour at the local supermarket. You never see the farm, the miller, or the trucks.`,
+      voicePrompt: 'Listen carefully: When an exam question mentions configuring custom OS drivers or legacy software dependencies, the answer is always IaaS!'
+    },
+    kinesthetic: {
+      labTitle: 'Deploying Azure App Service (PaaS) in 1 Command',
+      actionPrompt: 'Notice how PaaS deploys code without creating a virtual machine or configuring Linux kernel:',
+      cliCommand: 'az webapp up --name MyAfriCloudApp --runtime "NODE:20-lts"',
+      stepGuide: [
+        '1. Run `az webapp up` with your code.',
+        '2. Microsoft provisions the server, configures the HTTPS certificate, and sets up routing.',
+        '3. Zero OS patching required from your side!'
+      ]
+    },
+    reading: {
+      mnemonics: 'I.P.S: Infrastructure (rent bare metal/VM), Platform (run code), Software (consume ready app)',
+      cheatSheet: [
+        '• IaaS: Azure Virtual Machines, Virtual Network, Azure Disks. Customer controls OS.',
+        '• PaaS: Azure App Service, Azure SQL Database, Azure Functions. Microsoft controls OS and runtime.',
+        '• SaaS: Microsoft 365, OneDrive, Teams. Customer only manages data and user credentials.',
+        '• Serverless: A category of PaaS where billing is 100% execution-based (zero idle cost).'
+      ]
+    }
+  },
+
+  'cloud-types': {
+    title: 'Cloud Deployment Types & CapEx vs OpEx Economics',
+    visual: {
+      diagramType: 'Deployment Venn Diagram',
+      summary: 'Public Cloud (Shared hardware) | Private Cloud (Dedicated single-tenant) | Hybrid (Connected both)',
+      elements: [
+        { label: 'Public Cloud', scope: 'Multiple organizations share provider hardware securely over internet' },
+        { label: 'Private Cloud', scope: 'Single organization owns or exclusively leases infrastructure' },
+        { label: 'Hybrid Cloud', scope: 'Connects on-premises/private datacenter to public cloud via VPN/ExpressRoute' },
+        { label: 'Multi-Cloud', scope: 'Using services across multiple public providers (Azure + AWS + GCP)' }
+      ],
+      tip: 'Financial rule: CapEx = Upfront capital expense with depreciation. OpEx = Pay-as-you-go operational expense deductible immediately.'
+    },
+    auditory: {
+      analogyTitle: 'Drilling a Borehole vs Tap Water Consumption',
+      story: `• CapEx (Private Datacenter): Like spending $10,000 upfront to survey land, drill a 200-meter water borehole, and buy massive backup diesel pumps. Huge upfront investment whether you drink 1 glass or 1,000 liters.
+• OpEx (Public Cloud): Like connecting to the municipal water meter. Zero upfront drilling cost; you simply pay a small bill at the end of the month based on exact liters consumed.
+• Hybrid Cloud: You keep your private borehole for emergency farm irrigation, but connect your home to the municipal tap for daily cooking.`,
+      voicePrompt: 'Exam key: Consumption-based pricing means zero upfront costs, pay only for what you use, and deallocate to stop billing.'
+    },
+    kinesthetic: {
+      labTitle: 'Checking Azure Pricing & Consumption Metering',
+      actionPrompt: 'Calculate the cost difference between running a VM 24/7 vs auto-stopping it at night:',
+      cliCommand: 'az vm deallocate --resource-group ProdRG --name ComputeWorker01',
+      stepGuide: [
+        '1. When a VM is "Stopped (Deallocated)", compute billing drops to $0.00/hr.',
+        '2. Only storage disk fees persist.',
+        '3. This is the definition of the OpEx consumption model!'
+      ]
+    },
+    reading: {
+      mnemonics: 'C.O.P.H: CapEx (Upfront buy), OpEx (Pay as you go), Private (Dedicated), Hybrid (Bridge)',
+      cheatSheet: [
+        '• Capital Expenditure (CapEx): Upfront money spent on physical infrastructure, servers, cooling, and real estate.',
+        '• Operational Expenditure (OpEx): Ongoing costs for services or products with zero upfront hardware costs.',
+        '• Public Cloud: No capital expenditure to scale up; high reliability with zero hardware maintenance.',
+        '• Hybrid Cloud: Provides greatest flexibility for legacy data compliance and cloud modernization.'
       ]
     }
   },
@@ -120,6 +202,48 @@ export const REVISION_CONTENT_BY_TOPIC = {
         '• Availability Zone (AZ): Unique physical locations within an Azure region. Minimum 3 separate zones per enabled region.',
         '• Region Pairs: Two regions within same geography at least 300 miles apart. One updated at a time during maintenance.',
         '• Sovereign Regions: US DoD, Azure Government, Azure China 21Vianet for strict regulatory isolation.'
+      ]
+    }
+  },
+
+  'compute-services': {
+    title: 'Azure Compute & Containers (VMs, ACI, Functions)',
+    visual: {
+      diagramType: 'Compute Spectrum Tree',
+      summary: 'Virtual Machines (Full OS) -> Containers (Microservices) -> Serverless (Pure Code)',
+      elements: [
+        { label: 'Azure VMs', scope: 'IaaS full virtual machines (Linux/Windows) with dedicated OS' },
+        { label: 'Virtual Machine Scale Sets (VMSS)', scope: 'Manage and scale a pool of identical VMs automatically' },
+        { label: 'Azure Container Instances (ACI)', scope: 'Fastest way to run a Docker container without managing clusters' },
+        { label: 'Azure Kubernetes Service (AKS)', scope: 'Enterprise container orchestration for complex microservices' },
+        { label: 'Azure Functions', scope: 'Event-driven serverless code execution billed strictly per millisecond' }
+      ],
+      tip: 'Virtual Desktop: Azure Virtual Desktop (AVD) delivers cloud-hosted Windows desktops to remote workers on any device.'
+    },
+    auditory: {
+      analogyTitle: 'The Full-Time Driver vs Rideshare vs Courier Dispatch',
+      story: `• Virtual Machines (VMs): Hiring a permanent full-time driver with a car on monthly salary. You pay whether the car is parked or driving, and you maintain the seats and tires.
+• Containers (ACI/Docker): Packing your tools in a portable metal briefcase. You can hop into any commercial van in Nairobi, Lagos, or Johannesburg and your tools work identically.
+• Azure Functions (Serverless): A motorcycle courier on call. You don't own the motorbike or pay a monthly retainer; you dial when a parcel arrives, they deliver in 10 minutes, you pay $1, and they vanish!`,
+      voicePrompt: 'Audio tip: Azure Functions run on triggers (HTTP request, queue message, timer) with zero server management.'
+    },
+    kinesthetic: {
+      labTitle: 'Deploy a Serverless Azure Function',
+      actionPrompt: 'Simulate creating an event-driven function app:',
+      cliCommand: 'az functionapp create --resource-group 1MRG --consumption-plan-location southafricanorth --runtime node --functions-version 4 --name AfriFunction',
+      stepGuide: [
+        '1. Notice `--consumption-plan-location`: you pay zero dollars when no events trigger.',
+        '2. Scalability scales from 0 to 1,000 instances automatically during traffic spikes.'
+      ]
+    },
+    reading: {
+      mnemonics: 'V.C.S: VMs (Virtual machines), Containers (Docker/AKS), Serverless (Event-driven Functions)',
+      cheatSheet: [
+        '• Azure Virtual Machines: IaaS compute for legacy apps or full OS control.',
+        '• Scale Sets: Automatically increase or decrease VM instances based on demand.',
+        '• ACI: Run container without managing virtual machines or Kubernetes.',
+        '• AKS: Orchestrates thousands of containerized services at enterprise scale.',
+        '• Azure Functions: Event-driven serverless code that scales automatically.'
       ]
     }
   },
@@ -167,6 +291,49 @@ export const REVISION_CONTENT_BY_TOPIC = {
     }
   },
 
+  'networking-services': {
+    title: 'Azure Networking & Hybrid Connectivity',
+    visual: {
+      diagramType: 'Network Topology Map',
+      summary: 'Virtual Network (Isolation) -> Subnets (Segmentation) -> VPN Gateway (Public Encrypted) -> ExpressRoute (Private Dedicated)',
+      elements: [
+        { label: 'Azure Virtual Network (VNet)', scope: 'Isolated private IP network boundary in Azure' },
+        { label: 'Subnets', scope: 'Subdivide VNet into logical IP ranges (e.g. Frontend vs Backend)' },
+        { label: 'VPN Gateway', scope: 'Encrypted tunnel over public internet (up to 10 Gbps)' },
+        { label: 'Azure ExpressRoute', scope: 'Private dedicated fiber connection bypassing public internet (up to 100 Gbps)' },
+        { label: 'VNet Peering', scope: 'Direct low-latency connection between two Azure VNets using Microsoft backbone' }
+      ],
+      tip: 'ExpressRoute does NOT travel over the public internet! It offers the highest reliability, throughput, and predictable SLAs.'
+    },
+    auditory: {
+      analogyTitle: 'Bullion Escort on Highway vs Private Express Train',
+      story: `• Azure VPN Gateway: Traveling from Lagos to Abuja in an armored bullion vehicle over the public national highway. It is securely encrypted, but you still share the asphalt with civilian traffic, potholes, and unexpected delays.
+• Azure ExpressRoute: The government builds a private, dedicated high-speed SGR railway line connecting your warehouse directly to the central bank. Zero public traffic, speeds up to 100 Gbps, and guaranteed arrival times!
+• VNet Peering: Cutting an internal security door between two adjacent office suites in the same building.`,
+      voicePrompt: 'Listen to the rule: When an exam question specifies connecting on-premises to Azure without touching public internet, the answer is ExpressRoute!'
+    },
+    kinesthetic: {
+      labTitle: 'Peer Two Virtual Networks in CLI',
+      actionPrompt: 'Connect two virtual networks across Azure:',
+      cliCommand: 'az network vnet peering create --name EastToWest --resource-group NetRG --vnet-name VNetEast --remote-vnet VNetWest --allow-vnet-access',
+      stepGuide: [
+        '1. Virtual Network Peering links VNets seamlessly.',
+        '2. Traffic stays on Microsoft private global fiber backbone.',
+        '3. Zero gateway transit latency.'
+      ]
+    },
+    reading: {
+      mnemonics: 'V.P.E: Virtual Network (Private cloud network) | Peering (Link VNets) | ExpressRoute (No internet)',
+      cheatSheet: [
+        '• Virtual Network (VNet): Fundamental building block for private network in Azure.',
+        '• Subnets: Segment VNet into one or more sub-networks for security tiers.',
+        '• VPN Gateway: Sends encrypted traffic across public internet between on-prem and Azure.',
+        '• ExpressRoute: Direct private connection to Microsoft cloud via connectivity provider.',
+        '• Azure DNS: Ultra-fast domain name hosting using Azure global infrastructure.'
+      ]
+    }
+  },
+
   'identity-access': {
     title: 'Identity, Access & Security (Entra ID vs RBAC)',
     visual: {
@@ -207,8 +374,49 @@ export const REVISION_CONTENT_BY_TOPIC = {
     }
   },
 
+  'governance-compliance': {
+    title: 'Governance & Compliance: Azure Policy & Locks',
+    visual: {
+      diagramType: 'Guardrail Enforcement Pyramid',
+      summary: 'Azure Policy (Enforce rules) -> Resource Locks (Prevent accidents) -> Azure Blueprints',
+      elements: [
+        { label: 'Azure Policy', scope: 'Enforces standards and assesses compliance across resources at scale' },
+        { label: 'CanNotDelete Lock', scope: 'Users can read and modify, but CANNOT delete' },
+        { label: 'ReadOnly Lock', scope: 'Users can ONLY view; cannot modify or delete' },
+        { label: 'Tags', scope: 'Key-value pairs to organize resources for billing and cost allocation' }
+      ],
+      tip: 'Locks override RBAC roles! An Owner of a subscription cannot delete a resource with CanNotDelete lock until the lock is removed.'
+    },
+    auditory: {
+      analogyTitle: 'Traffic Speed Governors and Heavy Brass Padlocks',
+      story: `• Azure Policy: Like mandatory speed governors installed on all regional buses in Kenya or Nigeria. Even if a driver steps hard on the pedal, the bus will physically refuse to exceed 80 km/h. Azure Policy ensures developers can NEVER deploy VMs outside South Africa North, or spin up unapproved multi-thousand-dollar GPU instances.
+• Resource Locks: Like putting a physical brass padlock on your electrical substation meter. Nobody can cut the power during routine garden cleaning.
+• Azure Tags: Attaching color-coded livestock ear-tags to your herd so you immediately know which cow belongs to which department.`,
+      voicePrompt: 'Remember: Azure Policy evaluates resources for non-compliance and enforces rules like allowed locations!'
+    },
+    kinesthetic: {
+      labTitle: 'Apply CanNotDelete Lock via CLI',
+      actionPrompt: 'Lock a production database against accidental deletion:',
+      cliCommand: 'az lock create --name "NoAccidentalDrop" --lock-type CanNotDelete --resource-group "ProdDataRG"',
+      stepGuide: [
+        '1. Apply `CanNotDelete` lock to the Resource Group.',
+        '2. Even subscription Owners are blocked from deletion.',
+        '3. Try in portal: Lock tab under Settings.'
+      ]
+    },
+    reading: {
+      mnemonics: 'P.L.T: Policy (Rules/Compliance), Locks (Block deletion), Tags (Metadata/Cost center)',
+      cheatSheet: [
+        '• Azure Policy: Creates, assigns, and manages policy definitions (e.g. allowed VM SKUs, allowed locations).',
+        '• CanNotDelete: Allows updates but blocks deletion.',
+        '• ReadOnly: Blocks both updates and deletion.',
+        '• Tags: Do NOT inherit to child resources automatically; used for cost centers.'
+      ]
+    }
+  },
+
   'cost-management': {
-    title: 'Cost Management & Governance (Policy, Locks, Calculator)',
+    title: 'Cost Management & TCO Calculator',
     visual: {
       diagramType: 'Guardrails & Budget Gauges',
       summary: 'Azure Policy enforces rules; Resource Locks prevent accidental deletion; Budgets send alerts.',
@@ -218,33 +426,31 @@ export const REVISION_CONTENT_BY_TOPIC = {
         { label: 'Azure Policy', effect: 'Enforces organizational standards (e.g. only allow VMs in South Africa North)' },
         { label: 'Pricing Calculator', effect: 'Estimates projected costs BEFORE deploying resources to Azure' }
       ],
-      tip: 'Resource Locks override RBAC! Even a Subscription Owner cannot delete a resource locked with CanNotDelete until the lock is removed.'
+      tip: 'Pricing Calculator estimates future Azure costs; TCO Calculator compares on-prem hardware against cloud migration savings.'
     },
     auditory: {
-      analogyTitle: 'Speed Governors and Padlocks Analogy',
-      story: `• Azure Policy: Like the government installing mandatory speed governors on all commercial vehicles. Even if a driver wants to exceed 80 km/h, the engine physically prevents it. Azure Policy prevents anyone from creating unapproved expensive VMs or spinning up resources outside compliant African regions.
-• Resource Locks: Like putting a physical brass padlock on your water meter or electric transformer. It stops someone from accidentally cutting the power while doing garden work.
-• Pricing Calculator vs TCO: Pricing Calculator estimates your monthly Azure bill. TCO (Total Cost of Ownership) Calculator compares on-premise hardware/power/staff costs against moving to the cloud.`,
-      voicePrompt: 'Remember: Pricing Calculator is for Azure cloud estimates; TCO is for comparing On-Premise vs Cloud migration savings!'
+      analogyTitle: 'Shopping Cart Estimator vs Rent-or-Buy Calculator',
+      story: `• Pricing Calculator: Like walking into a supermarket with an online calculator. You tally up 2 bags of rice, 3 litres of cooking oil, and estimate your grocery bill before going to the cashier.
+• TCO (Total Cost of Ownership) Calculator: Deciding whether to buy a plot of land and build a commercial bakery from scratch (paying for industrial ovens, electricity transformers, security, and cleaning staff) versus leasing an operational commercial kitchen.`,
+      voicePrompt: 'Key exam rule: Pricing Calculator = Azure cloud estimate. TCO Calculator = On-Premise vs Cloud comparison.'
     },
     kinesthetic: {
-      labTitle: 'Locking a Production Database',
-      actionPrompt: 'Create a CanNotDelete lock on a critical resource group:',
-      cliCommand: 'az lock create --name "PreventAccidentalDrop" --lock-type CanNotDelete --resource-group "ProdDataRG"',
+      labTitle: 'Set an Azure Budget Alert in CLI',
+      actionPrompt: 'Configure cost alert at 80% of $500 monthly threshold:',
+      cliCommand: 'az consumption budget create --amount 500 --budget-name MonthlyCap --time-grain monthly --resource-group CostRG',
       stepGuide: [
-        '1. Apply lock: `CanNotDelete`.',
-        '2. Attempt to delete a test table: Notice the operation fails with access denied by management lock.',
-        '3. To modify, remove the lock temporarily, execute maintenance, and re-apply.'
+        '1. Create a monthly spending budget.',
+        '2. Set automated email alert at 80% threshold.',
+        '3. Automatically triggers action groups.'
       ]
     },
     reading: {
-      mnemonics: 'P.L.T: Policy (compliance guardrails) | Locks (prevent deletion) | Tags (cost allocation & metadata)',
+      mnemonics: 'P.C vs T.C.O: Pricing Calculator (Cloud costs), TCO (On-prem vs Cloud savings)',
       cheatSheet: [
-        '• Azure Pricing Calculator: Estimate anticipated costs for new deployments.',
-        '• Total Cost of Ownership (TCO) Calculator: Compare current on-prem data center costs with Azure.',
-        '• Azure Policy: Evaluates resources for non-compliance and enforces business rules (audit, deny, modify).',
-        '• Resource Locks: CanNotDelete (modify ok, delete blocked) and ReadOnly (modify & delete blocked).',
-        '• Tags: Key-value pairs applied to resources to track cost centers and department ownership.'
+        '• Pricing Calculator: Configure and estimate costs for Azure products.',
+        '• TCO Calculator: Compare costs for current datacenter against Azure.',
+        '• Cost Management: Monitor cloud spend, set budgets, and recommendations.',
+        '• Spending Limit: Free credit accounts have default $0 spending limits to prevent surprise charges.'
       ]
     }
   }

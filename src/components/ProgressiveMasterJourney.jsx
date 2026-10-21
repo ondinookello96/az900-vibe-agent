@@ -90,11 +90,14 @@ export const ProgressiveMasterJourney = ({
     setActiveMission(null);
   };
 
-  // Get matching questions and flashcards for the active mission
-  const activeQuestions = PRACTICE_QUESTIONS.filter(q => q.subtopic === activeMission?.subtopicId);
+  // Get matching questions and flashcards for the active mission with safe fallbacks
+  const activeQuestions = activeMission?.subtopicId 
+    ? PRACTICE_QUESTIONS.filter(q => q.subtopic === activeMission.subtopicId)
+    : [];
   const activeQuestion = activeQuestions[0] || PRACTICE_QUESTIONS[0];
-  const activeFlashcard = FLASHCARDS.find(f => f.subtopic === activeMission?.subtopicId) || FLASHCARDS[0];
-  const activeTopicContent = REVISION_CONTENT_BY_TOPIC[activeMission?.subtopicId] || REVISION_CONTENT_BY_TOPIC['networking-services'];
+  const activeFlashcard = (activeMission?.subtopicId && FLASHCARDS.find(f => f.subtopic === activeMission.subtopicId)) || FLASHCARDS[0];
+  const fallbackTopicContent = REVISION_CONTENT_BY_TOPIC['cloud-benefits'] || {};
+  const activeTopicContent = (activeMission?.subtopicId && REVISION_CONTENT_BY_TOPIC[activeMission.subtopicId]) || fallbackTopicContent;
 
   // Handle Quiz in Runner
   const handleAnswerOption = (idx) => {
@@ -380,8 +383,8 @@ export const ProgressiveMasterJourney = ({
                   💡 <strong>Learning Style: {currentStyle.name}</strong> — {currentStyle.description}
                 </div>
 
-                {/* Show content matching learner's style */}
-                {currentStyle.id === 'auditory' && activeTopicContent.auditory && (
+                {/* Show content matching learner's style with safe fallbacks */}
+                {currentStyle.id === 'auditory' && activeTopicContent?.auditory && (
                   <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
                     <h4 className="font-bold text-amber-400 text-sm">{activeTopicContent.auditory.analogyTitle}</h4>
                     <p className="text-xs sm:text-sm text-slate-200 whitespace-pre-line leading-relaxed font-sans">
@@ -390,7 +393,7 @@ export const ProgressiveMasterJourney = ({
                   </div>
                 )}
 
-                {currentStyle.id === 'visual' && activeTopicContent.visual && (
+                {currentStyle.id === 'visual' && activeTopicContent?.visual && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {activeTopicContent.visual.elements?.map((el, i) => (
                       <div key={i} className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300">
@@ -403,7 +406,7 @@ export const ProgressiveMasterJourney = ({
                   </div>
                 )}
 
-                {currentStyle.id === 'kinesthetic' && activeTopicContent.kinesthetic && (
+                {currentStyle.id === 'kinesthetic' && activeTopicContent?.kinesthetic && (
                   <div className="space-y-2 bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs">
                     <div className="text-emerald-400 font-bold">{activeTopicContent.kinesthetic.labTitle}</div>
                     <code className="text-slate-200 block p-2 rounded bg-slate-900 border border-slate-800">
@@ -412,7 +415,7 @@ export const ProgressiveMasterJourney = ({
                   </div>
                 )}
 
-                {currentStyle.id === 'reading' && activeTopicContent.reading && (
+                {currentStyle.id === 'reading' && activeTopicContent?.reading && (
                   <div className="space-y-2 bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs text-slate-200">
                     <div className="text-pink-400 font-bold font-mono">Mnemonic: {activeTopicContent.reading.mnemonics}</div>
                     {activeTopicContent.reading.cheatSheet?.map((item, idx) => (
@@ -437,13 +440,13 @@ export const ProgressiveMasterJourney = ({
             {runnerStep === 'practice' && (
               <div className="space-y-5 animate-fade-in">
                 <h4 className="text-sm sm:text-base font-semibold text-white">
-                  {activeQuestion.question}
+                  {activeQuestion?.question}
                 </h4>
 
                 <div className="space-y-2.5">
-                  {activeQuestion.options.map((opt, i) => {
+                  {activeQuestion?.options?.map((opt, i) => {
                     const isPicked = selectedAnswer === i;
-                    const isTargetCorrect = i === activeQuestion.correctIndex;
+                    const isTargetCorrect = i === activeQuestion?.correctIndex;
 
                     let style = 'bg-slate-950 border-slate-800 text-slate-200 hover:bg-slate-850';
                     if (isPicked && !isAnswerSubmitted) style = 'bg-blue-600/20 border-blue-500 text-white ring-1 ring-blue-500';
@@ -481,7 +484,7 @@ export const ProgressiveMasterJourney = ({
                   <div className="space-y-4 pt-2">
                     <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 space-y-1">
                       <strong className="text-emerald-400 block">Explanation:</strong>
-                      <p>{activeQuestion.explanation.whyCorrect}</p>
+                      <p>{activeQuestion?.explanation?.whyCorrect || 'Correct answer verified against syllabus.'}</p>
                     </div>
 
                     <button
@@ -513,12 +516,14 @@ export const ProgressiveMasterJourney = ({
 
                   {!isFlashcardFlipped ? (
                     <h4 className="text-xl font-bold text-white my-auto">
-                      {activeFlashcard.term}
+                      {activeFlashcard?.term || 'Concept Lock'}
                     </h4>
                   ) : (
                     <div className="my-auto space-y-2 text-left">
-                      <p className="text-xs sm:text-sm text-slate-200 font-medium">{activeFlashcard.definition}</p>
-                      <p className="text-xs text-amber-300">🌍 {activeFlashcard.africanAnalogy}</p>
+                      <p className="text-xs sm:text-sm text-slate-200 font-medium">{activeFlashcard?.definition}</p>
+                      {activeFlashcard?.africanAnalogy && (
+                        <p className="text-xs text-amber-300">🌍 {activeFlashcard.africanAnalogy}</p>
+                      )}
                     </div>
                   )}
 
