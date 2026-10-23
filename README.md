@@ -4,11 +4,19 @@
 > **Initiative:** #1MillionDevs Movement Vibe Coding Hackathon (October 2026)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Lovable%20Edge-success.svg)](https://repo-scout-companion.lovable.app/)
+[![Demo Video](https://img.shields.io/badge/Demo%20Video-YouTube-red.svg)](https://youtu.be/rhSGN3mxSTs)
 [![Hackathon Track](https://img.shields.io/badge/Track-Progress%3A%20Readiness%20Tracker-purple.svg)](#)
 [![GitHub Repo](https://img.shields.io/badge/GitHub-ondinookello96%2Faz900--vibe--agent-blue.svg)](https://github.com/ondinookello96/az900-vibe-agent)
 [![AZ-900](https://img.shields.io/badge/Certification-AZ--900%20Azure%20Fundamentals-0078D4.svg)](https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/)
 [![Community](https://img.shields.io/badge/Community-%231MillionDevs-amber.svg)](https://1milliondevs.org)
 [![Status](https://img.shields.io/badge/Status-Unofficial%20Community%20Tool-emerald.svg)](#)
+
+---
+
+> 🚀 **Live App:** [https://repo-scout-companion.lovable.app/](https://repo-scout-companion.lovable.app/)  
+> 🎥 **Video Demo (2m 40s):** [https://youtu.be/rhSGN3mxSTs](https://youtu.be/rhSGN3mxSTs)  
+> 📊 **Pitch Deck:** [Download PowerPoint (.pptx)](AfriCloud_AZ900_Pitch_Deck.pptx) | 🖥️ **Web Presenter:** [Launch Interactive Slides](https://repo-scout-companion.lovable.app/presentation.html)
 
 ---
 
@@ -82,7 +90,7 @@ Targeting **WCAG 2.1 AAA** compliance, ensuring nobody is left behind:
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/az900-vibe-agent.git
+git clone https://github.com/ondinookello96/az900-vibe-agent.git
 cd az900-vibe-agent
 
 # Install dependencies
@@ -104,7 +112,7 @@ The optimized static bundle is generated in `dist/` and can be deployed instantl
 
 ## 🏆 Official Hackathon Judging Criteria Alignment (100% Total)
 
-> 📊 **Pitch Deck:** [Download PowerPoint (.pptx)](AfriCloud_AZ900_Pitch_Deck.pptx) | 🖥️ **Web Presenter:** [Launch Interactive Slides](https://az900-vibe-agent.vercel.app/presentation.html)
+> 📊 **Pitch Deck:** [Download PowerPoint (.pptx)](AfriCloud_AZ900_Pitch_Deck.pptx) | 🖥️ **Web Presenter:** [Launch Interactive Slides](https://repo-scout-companion.lovable.app/presentation.html) | 🎥 **Video Demo:** [Watch on YouTube](https://youtu.be/rhSGN3mxSTs)
 
 | Official Judging Criterion | Weight | How AfriCloud Delivers Full Marks |
 | :--- | :---: | :--- |
